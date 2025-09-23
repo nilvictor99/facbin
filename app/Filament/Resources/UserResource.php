@@ -18,19 +18,39 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
+    public static function getNavigationGroup(): ?string
+    {
+        return __('navigation-panel.Administration');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('user.navegation_label');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('user.navegation_label');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('user.navegation_label_singel');
+    }
+
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Section::make(__('users.User_information'))
+                Section::make(__('user.User_information'))
                     ->icon('heroicon-m-user')
                     ->collapsible()
                     ->columns(2)
                     ->schema([
                         Forms\Components\TextInput::make('name')
-                            ->label(__('users.Name user'))
+                            ->translateLabel()
                             ->required(),
                         Forms\Components\TextInput::make('email')
                             ->translateLabel()
@@ -39,7 +59,7 @@ class UserResource extends Resource
                             ->required(),
                     ]),
 
-                Section::make(__('users.Security'))
+                Section::make(__('user.Security'))
                     ->icon('heroicon-m-adjustments-vertical')
                     ->collapsible()
                     ->columns(1)
@@ -67,23 +87,29 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->translateLabel()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
+                    ->translateLabel()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email_verified_at')
-                    ->dateTime()
+                    ->translateLabel()
+                    ->date()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
+                    ->translateLabel()
+                    ->date()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->translateLabel()
+                    ->date()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('deleted_at')
-                    ->dateTime()
+                    ->translateLabel()
+                    ->date()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
