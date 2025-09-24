@@ -19,8 +19,8 @@ return new class extends Migration
             $table->datetime('fecha_emision');
             $table->decimal('total', 10, 2);
             $table->string('estado')->default('pendiente');
-            $table->foreignId('client_id')->constrained();
-            $table->foreignId('company_id')->constrained();
+            $table->foreignId('client_id')->nullable()->constrained();
+            $table->foreignId('company_id')->nullable()->constrained();
             $table->string('xml_path')->nullable();
             $table->string('cdr_path')->nullable();
             $table->string('ticket')->nullable();

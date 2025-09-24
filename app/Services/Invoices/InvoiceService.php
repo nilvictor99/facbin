@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Invoices;
 
 use App\Repositories\Models\InvoiceRepository;
 use App\Services\Invoices\Formatters\BoletaFormatter;
@@ -13,8 +13,11 @@ use Illuminate\Support\Facades\Storage;
 class InvoiceService
 {
     private See $see;
+
     private InvoiceRepository $invoiceRepo;
+
     private BoletaFormatter $boletaFormatter;
+
     private FacturaFormatter $facturaFormatter;
 
     public function __construct(
@@ -30,8 +33,8 @@ class InvoiceService
 
     private function configureGreenter(): void
     {
-        $this->see = new See();
-        $this->see->setCertificate(file_get_contents(Storage::path(config('invoice.certificate_path'))));
+        $this->see = new See;
+        $this->see->setCertificate(file_get_contents(Storage::disk('certificates')->path(config('invoice.certificate_path'))));
         $this->see->setService(
             config('invoice.environment') === 'production' ? SunatEndpoints::FE_PRODUCCION : SunatEndpoints::FE_BETA
         );
@@ -42,45 +45,40 @@ class InvoiceService
         );
     }
 
-    public function createInvoice(array $data): array
+    public function createInvoice(array $data = []): array
     {
-        // Crear factura/boleta usando el formateador correspondiente
         $greenterInvoice = $this->buildGreenterInvoice($data);
 
-        // Enviar a SUNAT
         /** @var BillResult $result */
         $result = $this->see->send($greenterInvoice);
 
-        // Guardar XML firmado
-        $xmlPath = 'invoices/' . $greenterInvoice->getName() . '.xml';
+        $xmlPath = 'invoices/'.$greenterInvoice->getName().'.xml';
         Storage::put($xmlPath, $this->see->getFactory()->getLastXml());
 
-        if (!$result->isSuccess()) {
+        if (! $result->isSuccess()) {
             return [
                 'success' => false,
                 'error' => $result->getError()->getMessage(),
-                'code' => $result->getError()->getCode()
+                'code' => $result->getError()->getCode(),
             ];
         }
 
         $cdr = $result->getCdrResponse();
-        $code = (int)$cdr->getCode();
+        $code = (int) $cdr->getCode();
         $status = $code === 0 ? 'aceptado' : 'rechazado';
 
-        $cdrPath = 'cdrs/R-' . $greenterInvoice->getName() . '.zip';
+        $cdrPath = 'cdrs/R-'.$greenterInvoice->getName().'.zip';
         Storage::put($cdrPath, $result->getCdrZip());
 
         $invoice = $this->invoiceRepo->create([
-            'serie' => $data['serie'],
-            'correlativo' => $data['correlativo'],
-            'tipo_doc' => $data['tipo_doc'],
-            'fecha_emision' => $data['fecha_emision'],
-            'total' => $data['mto_imp_venta'],
+            'serie' => $greenterInvoice->getSerie(),
+            'correlativo' => $greenterInvoice->getCorrelativo(),
+            'tipo_doc' => $greenterInvoice->getTipoDoc(),
+            'fecha_emision' => $greenterInvoice->getFechaEmision(),
+            'total' => $greenterInvoice->getMtoImpVenta(),
             'estado' => $status,
-            'client_id' => $data['client_id'],
-            'company_id' => $data['company_id'],
             'xml_path' => $xmlPath,
-            'cdr_path' => $cdrPath
+            'cdr_path' => $cdrPath,
         ]);
 
         return [
@@ -93,16 +91,15 @@ class InvoiceService
                 'sunat_response' => [
                     'code' => $code,
                     'description' => $cdr->getDescription(),
-                    'notes' => $cdr->getNotes()
-                ]
-            ]
+                    'notes' => $cdr->getNotes(),
+                ],
+            ],
         ];
     }
 
-
     private function buildGreenterInvoice(array $data): GreenterInvoice
     {
-        return $data['tipo_doc'] === '01'
+        return empty($data['tipo_doc']) || $data['tipo_doc'] === '01'
             ? $this->facturaFormatter->formatFactura($data)
             : $this->boletaFormatter->formatBoleta($data);
     }

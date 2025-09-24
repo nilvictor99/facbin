@@ -4,7 +4,6 @@ namespace App\Services\Models;
 
 use App\Repositories\Models\VoidedRepository;
 
-
 class VoidedService extends BaseService
 {
     protected $voidedRepository;
