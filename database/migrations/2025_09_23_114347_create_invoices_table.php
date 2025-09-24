@@ -34,6 +34,7 @@ return new class extends Migration
             $table->text('cadena_xml')->nullable();
             $table->text('url_xml')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
