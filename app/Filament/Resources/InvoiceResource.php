@@ -16,7 +16,27 @@ class InvoiceResource extends Resource
 {
     protected static ?string $model = Invoice::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('navigation-panel.Logistics');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('invoice.navegation_label');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('invoice.navegation_label');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('invoice.navegation_label_singel');
+    }
+
+    protected static ?string $navigationIcon = 'heroicon-o-document-chart-bar';
 
     public static function form(Form $form): Form
     {
