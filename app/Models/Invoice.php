@@ -23,7 +23,7 @@ class Invoice extends Model
         'igv',
         'total',
         'estado',
-        'client_id',
+        'customer_id',
         'company_id',
         'xml_path',
         'cdr_path',
@@ -40,9 +40,9 @@ class Invoice extends Model
         'fecha_emision' => 'datetime',
     ];
 
-    public function client(): BelongsTo
+    public function customer(): BelongsTo
     {
-        return $this->belongsTo(Client::class);
+        return $this->belongsTo(Customer::class);
     }
 
     public function company(): BelongsTo

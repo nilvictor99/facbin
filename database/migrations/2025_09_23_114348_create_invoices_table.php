@@ -22,7 +22,7 @@ return new class extends Migration
             $table->decimal('igv')->nullable();
             $table->decimal('total', 10, 2);
             $table->string('estado')->default('pendiente');
-            $table->foreignId('client_id')->nullable()->constrained();
+            $table->foreignId('customer_id')->nullable()->constrained();
             $table->foreignId('company_id')->nullable()->constrained();
             $table->string('xml_path')->nullable();
             $table->string('cdr_path')->nullable();
