@@ -16,6 +16,9 @@ class Invoice extends Model
         'correlativo',
         'tipo_doc',
         'fecha_emision',
+        'subtotal',
+        'igv_percentage',
+        'igv',
         'total',
         'estado',
         'client_id',
@@ -23,6 +26,12 @@ class Invoice extends Model
         'xml_path',
         'cdr_path',
         'ticket',
+        'doc_respuesta',
+        'cadena_ticket',
+        'url_ticket',
+        'url_a4',
+        'cadena_xml',
+        'url_xml',
     ];
 
     protected $casts = [
