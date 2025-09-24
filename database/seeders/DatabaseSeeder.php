@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -15,6 +16,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CurrencySeeder::class,
             MeasureUnitSeeder::class,
+            UbigeoSeeder::class,
+            DocumentTypeSeeder::class,
+            IdentificationTypeSeeder::class,
             OwnerSeeder::class,
             RoleSeeder::class,
         ]);

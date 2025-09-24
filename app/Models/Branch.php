@@ -16,4 +16,14 @@ class Branch extends Model
         'id',
         'name',
     ];
+
+    public function address()
+    {
+        return $this->morphOne(Addresse::class, 'addressable');
+    }
+
+    public function contacts()
+    {
+        return $this->morphMany(Contact::class, 'contactable');
+    }
 }
