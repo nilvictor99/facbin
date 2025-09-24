@@ -15,8 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->decimal('price', 10, 2);
+            $table->foreignId('measure_unit_id')->constrained('measure_units');
             $table->integer('stock')->default(0);
+            $table->decimal('sale_price', 10, 2);
+            $table->decimal('purchase_price', 10, 2);
+            $table->boolean('active')->default(true);
+            $table->json('characters')->nullable();
+            $table->text('instructions')->nullable();
+            $table->foreignId('currency_id')->constrained('currencies');
             $table->timestamps();
         });
     }
