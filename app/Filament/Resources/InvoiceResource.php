@@ -117,16 +117,8 @@ class InvoiceResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('serie')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('correlativo')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('tipo_doc')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('fecha_emision')
-                    ->dateTime()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('subtotal')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('igv_percentage')
                     ->numeric()
                     ->sortable(),
@@ -136,22 +128,6 @@ class InvoiceResource extends Resource
                 Tables\Columns\TextColumn::make('total')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('estado')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('client.id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('company.id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('xml_path')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('cdr_path')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('ticket')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('doc_respuesta')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
