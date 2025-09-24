@@ -17,6 +17,9 @@ return new class extends Migration
             $table->string('correlativo');
             $table->string('tipo_doc');
             $table->datetime('fecha_emision');
+            $table->decimal('subtotal')->nullable();
+            $table->decimal('igv_percentage', 5, 2)->default(18.00);
+            $table->decimal('igv')->nullable();
             $table->decimal('total', 10, 2);
             $table->string('estado')->default('pendiente');
             $table->foreignId('client_id')->nullable()->constrained();
@@ -24,6 +27,12 @@ return new class extends Migration
             $table->string('xml_path')->nullable();
             $table->string('cdr_path')->nullable();
             $table->string('ticket')->nullable();
+            $table->string('doc_respuesta')->nullable();
+            $table->text('cadena_ticket')->nullable();
+            $table->text('url_ticket')->nullable();
+            $table->text('url_a4')->nullable();
+            $table->text('cadena_xml')->nullable();
+            $table->text('url_xml')->nullable();
             $table->timestamps();
         });
     }
