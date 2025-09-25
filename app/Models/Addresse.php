@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Addresse extends Model
 {
@@ -20,9 +21,9 @@ class Addresse extends Model
         return $this->morphTo();
     }
 
-    public function ubigeo()
+    public function ubigeo(): BelongsTo
     {
-        return $this->belongsTo(ubigeo::class, 'ubigeo_cod', 'cod_ubigeo');
+        return $this->belongsTo(Ubigeo::class, 'ubigeo_cod', 'cod_ubigeo');
     }
 
     public function scopeSearchAddress(Builder $query, $search)
