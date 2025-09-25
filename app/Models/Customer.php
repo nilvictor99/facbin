@@ -24,8 +24,13 @@ class Customer extends Model
         return $this->morphOne(Profile::class, 'profileable');
     }
 
-    public function addresses()
+    public function address()
     {
-        return $this->morphMany(Addresse::class, 'addressable');
+        return $this->morphOne(Addresse::class, 'addressable');
+    }
+
+    public function contacts()
+    {
+        return $this->morphMany(Contact::class, 'contactable');
     }
 }
