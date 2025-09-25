@@ -8,7 +8,6 @@ use App\Services\Models\UbigeoService;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
-use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -54,8 +53,7 @@ class BranchResource extends Resource
                             ])
                             ->required()
                             ->maxLength(255)
-                            ->reactive()
-                            ->afterStateUpdated(fn (Set $set, $state) => $set('name', self::normalizeString($state))),
+                            ->reactive(),
                         Forms\Components\TextInput::make('id')
                             ->label(__('correlative'))
                             ->numeric()
@@ -135,11 +133,32 @@ class BranchResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
-                    ->label('ID')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('name')
+                    ->translateLabel()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('id')
+                    ->label(__('ubigeo'))
+                    ->limit(25)
+                    ->formatStateUsing(fn ($record) => $record->address?->ubigeo
+                        ? $record->address->ubigeo->departament.' - '.$record->address->ubigeo->province.' - '.$record->address->ubigeo->district
+                        : 'Ubigeo no disponible'),
+                Tables\Columns\TextColumn::make('address')
+                    ->translateLabel()
+                    ->default('Dirección no disponible')
+                    ->formatStateUsing(fn ($record) => $record->address?->address ?? 'No disponible')
+                    ->limit(25)
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('contacts')
+                    ->translateLabel()
+                    ->state(function ($record): string {
+                        return $record->contacts()
+                            ->latest()
+                            ->first()
+                            ?->phone_number ?? 'No disponible';
+                    })
+                    ->badge()
+                    ->copyable()
+                    ->limit(25),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

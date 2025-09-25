@@ -28,6 +28,11 @@ class Branch extends Model
         return $this->morphMany(Contact::class, 'contactable');
     }
 
+    public function ubigeo()
+    {
+        return $this->belongsTo(Ubigeo::class, 'ubigeo_cod');
+    }
+
     public function scopeNextCode(Builder $query)
     {
         $lastBranch = $query->orderBy('id', 'desc')->first();
