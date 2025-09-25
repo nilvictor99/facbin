@@ -112,7 +112,7 @@ class BranchResource extends Resource
                     ->collapsible()
                     ->columnSpanFull()
                     ->schema([
-                        Forms\Components\TextInput::make('phone_type')
+                        Forms\Components\TextInput::make('contact_type')
                             ->translateLabel()
                             ->maxLength(50)
                             ->default('Oficina')
@@ -120,7 +120,7 @@ class BranchResource extends Resource
                         CountryCodeSelect::make('country_code')
                             ->default('+51')
                             ->translateLabel(),
-                        Forms\Components\TextInput::make('phone_number')
+                        Forms\Components\TextInput::make('contact_value')
                             ->translateLabel()
                             ->rules(['max:15'])
                             ->maxLength(15),
