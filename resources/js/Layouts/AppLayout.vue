@@ -272,7 +272,7 @@
                                             Profile
                                         </DropdownLink>
                                         <DropdownLink href="/admin" as="a">
-                                            Admin Panel
+                                            Panel Administrativo
                                         </DropdownLink>
                                         <DropdownLink
                                             v-if="
