@@ -237,5 +237,11 @@
     "References": "Referencias",
     "Contact type": "Tipo de contacto",
     "Country code": "Código de país",
-    "Contact value": "contacto"
+    "Contact value": "contacto",
+    "Sale price": "Precio de venta",
+    "Purchase price": "Precio de compra",
+    "Currency": "Moneda",
+    "Characters": "Caracteristicas",
+    "Measure unit": "Unidad de medida",
+    "Stock": "Cantidad"
 }
