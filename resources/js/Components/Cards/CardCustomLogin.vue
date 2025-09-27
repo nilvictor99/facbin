@@ -1,11 +1,11 @@
 <template>
     <div
-        class="bg-white/40 backdrop-blur-[20px] rounded-[12px] z-5 flex flex-col shadow-[0_0_5px_0_rgba(22,22,22,0.1)] w-full max-w-[350px] sm:max-w-[400px] md:max-w-[450px] p-3 sm:p-5 md:p-6 animate-fade-in-up"
+        class="bg-white/40 backdrop-blur-[20px] rounded-[12px] z-5 flex flex-col shadow-[0_0_5px_0_rgba(22,22,22,0.1)] w-full max-w-[340px] sm:max-w-[400px] md:max-w-[380px] p-3 sm:p-5 md:p-6 animate-fade-in-up"
     >
         <div class="flex justify-center animate-bounce-in mb-4 sm:mb-6">
             <slot name="logo" />
         </div>
-        <div class="animate-slide-up px-2 sm:px-0">
+        <div class="animate-slide-up px-4 sm:px-0">
             <slot />
         </div>
     </div>
