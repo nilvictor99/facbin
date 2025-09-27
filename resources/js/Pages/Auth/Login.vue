@@ -30,7 +30,13 @@
 </script>
 
 <template>
-    <Head title="Log in" />
+    <Head title="Log in">
+        <link
+            rel="icon"
+            type="image/x-icon"
+            href="/System/favicon/favicon.ico"
+        />
+    </Head>
 
     <div
         class="h-screen bg-cover bg-center bg-no-repeat overflow-hidden flex items-center justify-center relative"
