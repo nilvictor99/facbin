@@ -34,7 +34,7 @@
 
     <div
         class="h-screen bg-cover bg-center bg-no-repeat overflow-hidden flex items-center justify-center relative"
-        style="background-image: url('/System/Samples/background.webp')"
+        style="background-image: url('/System/samples/fondo-login.webp')"
     >
         <CardCustomLogin>
             <template #logo>
