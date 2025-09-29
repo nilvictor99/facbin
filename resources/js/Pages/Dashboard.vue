@@ -12,8 +12,8 @@
 
     const optionsAccess = [
         {
-            name: 'Sistema de Ventas',
-            route: 'waiter',
+            name: 'Usuarios',
+            route: route('users.index'),
             background:
                 'https://i.pinimg.com/736x/e6/08/21/e60821b561cd75d26b9172ed17953d3b.jpg',
             roles: ['Mozo', 'super usuario', 'Administrador'],
