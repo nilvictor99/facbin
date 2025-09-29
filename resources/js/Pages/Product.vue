@@ -5,7 +5,7 @@
     import LoadingSection from '@/Components/Sections/LoadingSection.vue';
 
     onMounted(() => {
-        router.visit(route('users.list'));
+        router.visit(route('products.list'));
     });
 </script>
 
