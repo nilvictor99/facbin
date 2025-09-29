@@ -3,24 +3,45 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\Models\UserService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    private $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     public function index()
     {
         return Inertia::render('User');
     }
 
-    public function list()
+    public function list(Request $request)
     {
-        $users = User::all();
+        $search = $request->input('search');
+        $startDate = $request->input('start');
+        $endDate = $request->input('end');
+        $userId = $request->input('user_id');
+        $perPage = $request->input('per_page', 5);
+        $users = $this->userService->getUsers();
+        $data = $this->userService->getModel($search, $startDate, $endDate, $userId, $perPage);
 
-        return Inertia::render('User/List', ['users' => $users]);
+        return Inertia::render('User/List', [
+            'data' => $data,
+            'search' => $search,
+            'dateRange' => [
+                'start' => $startDate,
+                'end' => $endDate,
+            ],
+            'users' => $users,
+            'userId' => $userId,
+            'perPage' => $perPage,
+        ]);
     }
 
     public function create()
@@ -28,41 +49,26 @@ class UserController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(User $user)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(User $user)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, User $user)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(User $user)
     {
         //

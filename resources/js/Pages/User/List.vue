@@ -9,7 +9,7 @@
     import InputSelectClasic from '@/Components/Inputs/InputSelectClasic.vue';
 
     const props = defineProps({
-        users: {
+        data: {
             type: Object,
             required: true,
         },
@@ -25,13 +25,9 @@
             type: [String, Number],
             default: null,
         },
-        userOptions: {
+        users: {
             type: Array,
             default: () => [],
-        },
-        selectedUserText: {
-            type: String,
-            default: '',
         },
         dateRange: {
             type: Object,
@@ -60,7 +56,7 @@
             params.user_id = userId.value;
         }
 
-        router.get(route('user.list'), params, {
+        router.get(route('users.list'), params, {
             preserveState: true,
             replace: true,
         });
@@ -86,10 +82,14 @@
                     />
                     <InputSelectClasic
                         v-model="userId"
-                        :options="userOptions"
+                        :options="
+                            users.map(user => ({
+                                id: user.id,
+                                text: user.name,
+                            }))
+                        "
                         :initialValue="{
                             id: props.userId,
-                            text: selectedUserText,
                         }"
                         :roles="['super usuario', 'super_admin']"
                         :permissions="[]"
@@ -146,7 +146,7 @@
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 <tr
-                                    v-for="user in users"
+                                    v-for="user in data.data"
                                     :key="user.id"
                                     class="hover:bg-gray-50 transition-colors"
                                 >
@@ -181,7 +181,7 @@
                     </div>
 
                     <div
-                        v-if="users.length > 4"
+                        v-if="data.data.length > 4"
                         class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4"
                     >
                         <PerPageSelector
@@ -189,7 +189,7 @@
                             :options="[5, 10, 25, 50, 100]"
                             @change="handleSearch"
                         />
-                        <Pagination :pagination="users" />
+                        <Pagination :pagination="data" />
                     </div>
                 </div>
             </div>
