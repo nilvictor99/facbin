@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\Models\IdentificationTypeService;
 use App\Services\Models\UserService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -11,9 +12,12 @@ class UserController extends Controller
 {
     private $userService;
 
-    public function __construct(UserService $userService)
+    private $IdentificationTypeService;
+
+    public function __construct(UserService $userService, IdentificationTypeService $IdentificationTypeService)
     {
         $this->userService = $userService;
+        $this->IdentificationTypeService = $IdentificationTypeService;
     }
 
     public function index()
@@ -46,12 +50,16 @@ class UserController extends Controller
 
     public function create()
     {
-        //
+        $identificationTypes = $this->IdentificationTypeService->getSimpleData();
+
+        return Inertia::render('User/Create', [
+            'identificationTypes' => $identificationTypes,
+        ]);
     }
 
     public function store(Request $request)
     {
-        //
+        dd($request->all());
     }
 
     public function show(User $user)

@@ -30,6 +30,8 @@ Route::middleware([
     Route::controller(UserController::class)->group(function () {
         Route::get('/user', 'index')->name('users.index');
         Route::get('/user/list', 'list')->name('users.list');
+        Route::get('/user/create', 'create')->name('users.create');
+        Route::post('/user/store', 'store')->name('users.store');
     });
 
     Route::controller(CustomerController::class)->group(function () {

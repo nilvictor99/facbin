@@ -3,6 +3,7 @@
     import CalendarClock from '@/Components/Icons/CalendarClock.vue';
     import ChevronLeft from '@/Components/Icons/ChevronLeft.vue';
     import ChevronRight from '@/Components/Icons/ChevronRight.vue';
+    import ClassicLabel from '../Labels/ClassicLabel.vue';
 
     const props = defineProps({
         modelValue: { type: String, default: '' },
@@ -22,6 +23,20 @@
             type: String,
             default: 'gray',
             validator: value => ['gray', 'indigo', 'orange'].includes(value),
+        },
+        label: { type: String, default: '' },
+        required: { type: Boolean, default: false },
+        name: { type: String, default: '' },
+        size: {
+            type: String,
+            default: 'sm',
+            validator: value => ['xs', 'sm', 'base', 'lg'].includes(value),
+        },
+        weight: {
+            type: String,
+            default: 'normal',
+            validator: value =>
+                ['normal', 'medium', 'semibold', 'bold'].includes(value),
         },
     });
 
@@ -71,6 +86,28 @@
         };
         return themes[props.theme];
     });
+
+    const labelTheme = computed(() => {
+        const themeMap = {
+            gray: 'gray',
+            indigo: 'indigo',
+            orange: 'primary',
+        };
+        return themeMap[props.theme] || 'gray';
+    });
+
+    const weightClasses = computed(() => {
+        const weights = {
+            normal: 'font-normal',
+            medium: 'font-medium',
+            semibold: 'font-semibold',
+            bold: 'font-bold',
+        };
+        return weights[props.weight] || weights.normal;
+    });
+
+    const uniqueId = ref(Math.random().toString(36).substring(2, 9));
+    const inputId = computed(() => props.name || `date-${uniqueId.value}`);
 
     const showCalendar = ref(false);
     const showYearSelector = ref(false);
@@ -396,185 +433,209 @@
 </script>
 
 <template>
-    <div class="relative w-full">
-        <div class="relative" ref="inputRef">
-            <input
-                type="text"
-                v-model="inputValue"
-                :placeholder="placeholder"
-                :disabled="disabled"
-                :readonly="!allowInput"
-                @focus="showCalendar = true"
-                @input="handleInputChange"
-                @blur="handleInputBlur"
-                :class="[
-                    'w-full rounded-md py-2 px-3 bg-white text-gray-800 text-sm sm:text-base',
-                    themeClasses.border,
-                    themeClasses.focus,
-                    bold ? 'font-semibold' : '',
-                    disabled
-                        ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
-                        : 'cursor-text',
-                ]"
-            />
-            <div class="absolute inset-y-0 right-0 flex items-center pr-3">
-                <CalendarClock
-                    class="h-5 w-5 text-gray-500 cursor-pointer"
-                    @click="!disabled && (showCalendar = !showCalendar)"
+    <div class="w-full">
+        <ClassicLabel
+            v-if="label"
+            :value="label"
+            :theme="labelTheme"
+            :size="size"
+            :required="required"
+            :for="inputId"
+            class="mb-1"
+        />
+        <div class="relative w-full">
+            <div class="relative" ref="inputRef">
+                <input
+                    type="text"
+                    v-model="inputValue"
+                    :name="name"
+                    :placeholder="placeholder"
+                    :disabled="disabled"
+                    :readonly="!allowInput"
+                    @focus="showCalendar = true"
+                    @input="handleInputChange"
+                    @blur="handleInputBlur"
+                    :class="[
+                        'w-full rounded-md py-2 px-3 bg-white text-gray-800',
+                        {
+                            'text-xs': size === 'xs',
+                            'text-sm': size === 'sm',
+                            'text-base': size === 'base',
+                            'text-lg': size === 'lg',
+                        },
+                        weightClasses,
+                        themeClasses.border,
+                        themeClasses.focus,
+                        disabled
+                            ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
+                            : 'cursor-text',
+                    ]"
                 />
-            </div>
-        </div>
-
-        <!-- Calendario desplegable -->
-        <div
-            v-show="showCalendar"
-            ref="calendarRef"
-            class="absolute z-50 mt-1 p-2 sm:p-4 bg-white border border-gray-200 rounded-lg shadow-lg w-full sm:w-80 max-w-sm"
-        >
-            <!-- Encabezado con selectores de año y mes -->
-            <div class="flex justify-between items-center mb-2 sm:mb-4">
-                <button
-                    @click="prevMonth"
-                    :class="['p-1 rounded-full', themeClasses.buttonHover]"
-                    type="button"
-                >
-                    <ChevronLeft class="h-4 w-4 sm:h-5 sm:w-5" />
-                </button>
-
-                <div class="flex gap-1 sm:gap-2">
-                    <!-- Selector de mes -->
-                    <div class="relative">
-                        <button
-                            @click="showMonthSelector = !showMonthSelector"
-                            :class="[
-                                'text-sm sm:text-lg font-semibold text-gray-800',
-                                themeClasses.dropdown.button,
-                            ]"
-                        >
-                            {{ months[currentDate.getMonth()] }}
-                        </button>
-                        <div
-                            v-if="showMonthSelector"
-                            class="absolute top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10 max-h-32 sm:max-h-48 overflow-y-auto w-24 sm:w-32"
-                        >
-                            <button
-                                v-for="(month, index) in months"
-                                :key="index"
-                                @click="handleMonthSelect(index)"
-                                :class="[
-                                    'block w-full px-2 sm:px-4 py-1 sm:py-2 text-left text-xs sm:text-sm text-gray-700',
-                                    themeClasses.dropdown.item,
-                                    {
-                                        [themeClasses.dropdown.selected]:
-                                            index === currentDate.getMonth(),
-                                    },
-                                ]"
-                            >
-                                {{ month }}
-                            </button>
-                        </div>
-                    </div>
-                    <!-- Selector de año -->
-                    <div class="relative">
-                        <button
-                            @click="showYearSelector = !showYearSelector"
-                            :class="[
-                                'text-sm sm:text-lg font-semibold text-gray-800',
-                                themeClasses.dropdown.button,
-                            ]"
-                        >
-                            {{ currentDate.getFullYear() }}
-                        </button>
-                        <div
-                            v-if="showYearSelector"
-                            class="absolute top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10 max-h-32 sm:max-h-48 overflow-y-auto w-20 sm:w-24"
-                        >
-                            <button
-                                v-for="year in availableYears"
-                                :key="year"
-                                @click="handleYearSelect(year)"
-                                :class="[
-                                    'block w-full px-2 sm:px-4 py-1 sm:py-2 text-left text-xs sm:text-sm text-gray-700',
-                                    themeClasses.dropdown.item,
-                                    {
-                                        [themeClasses.dropdown.selected]:
-                                            year === currentDate.getFullYear(),
-                                    },
-                                ]"
-                            >
-                                {{ year }}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <button
-                    @click="nextMonth"
-                    :class="['p-1 rounded-full', themeClasses.buttonHover]"
-                    type="button"
-                >
-                    <ChevronRight class="h-4 w-4 sm:h-5 sm:w-5" />
-                </button>
-            </div>
-
-            <!-- Días de la semana -->
-            <div class="grid grid-cols-7 gap-1 mb-1 sm:mb-2">
-                <div
-                    v-for="(day, index) in weekdays"
-                    :key="index"
-                    class="text-center text-xs sm:text-sm font-medium text-gray-600"
-                >
-                    {{ day }}
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                    <CalendarClock
+                        class="h-5 w-5 text-gray-500 cursor-pointer"
+                        @click="!disabled && (showCalendar = !showCalendar)"
+                    />
                 </div>
             </div>
 
-            <!-- Días del mes -->
-            <div class="grid grid-cols-7 gap-1">
-                <button
-                    v-for="(day, index) in calendarDays"
-                    :key="index"
-                    @click="selectDay(day)"
-                    :disabled="isDateDisabled(day)"
-                    type="button"
-                    :class="[
-                        'w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-xs sm:text-sm',
-                        isDateSelected(day)
-                            ? themeClasses.selected
-                            : day.isCurrentMonth
-                              ? `text-gray-800 ${themeClasses.hover}`
-                              : 'text-gray-400',
-                        isDateDisabled(day)
-                            ? 'cursor-not-allowed opacity-50'
-                            : 'cursor-pointer',
-                    ]"
-                >
-                    {{ day.day }}
-                </button>
-            </div>
-
-            <!-- Acciones rápidas -->
+            <!-- Calendario desplegable -->
             <div
-                class="flex justify-between mt-2 sm:mt-4 pt-2 border-t border-gray-200"
+                v-show="showCalendar"
+                ref="calendarRef"
+                class="absolute z-50 mt-1 p-2 sm:p-4 bg-white border border-gray-200 rounded-lg shadow-lg w-full sm:w-80 max-w-sm"
             >
-                <button
-                    @click="clearDate"
-                    :class="['text-xs sm:text-sm', themeClasses.accent]"
-                    type="button"
-                    :disabled="disabled"
+                <!-- Encabezado con selectores de año y mes -->
+                <div class="flex justify-between items-center mb-2 sm:mb-4">
+                    <button
+                        @click="prevMonth"
+                        :class="['p-1 rounded-full', themeClasses.buttonHover]"
+                        type="button"
+                    >
+                        <ChevronLeft class="h-4 w-4 sm:h-5 sm:w-5" />
+                    </button>
+
+                    <div class="flex gap-1 sm:gap-2">
+                        <!-- Selector de mes -->
+                        <div class="relative">
+                            <button
+                                type="button"
+                                @click="showMonthSelector = !showMonthSelector"
+                                :class="[
+                                    'text-sm sm:text-lg font-semibold text-gray-800',
+                                    themeClasses.dropdown.button,
+                                ]"
+                            >
+                                {{ months[currentDate.getMonth()] }}
+                            </button>
+                            <div
+                                v-if="showMonthSelector"
+                                class="absolute top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10 max-h-32 sm:max-h-48 overflow-y-auto w-24 sm:w-32"
+                            >
+                                <button
+                                    type="button"
+                                    v-for="(month, index) in months"
+                                    :key="index"
+                                    @click="handleMonthSelect(index)"
+                                    :class="[
+                                        'block w-full px-2 sm:px-4 py-1 sm:py-2 text-left text-xs sm:text-sm text-gray-700',
+                                        themeClasses.dropdown.item,
+                                        {
+                                            [themeClasses.dropdown.selected]:
+                                                index ===
+                                                currentDate.getMonth(),
+                                        },
+                                    ]"
+                                >
+                                    {{ month }}
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Selector de año -->
+                        <div class="relative">
+                            <button
+                                type="button"
+                                @click="showYearSelector = !showYearSelector"
+                                :class="[
+                                    'text-sm sm:text-lg font-semibold text-gray-800',
+                                    themeClasses.dropdown.button,
+                                ]"
+                            >
+                                {{ currentDate.getFullYear() }}
+                            </button>
+                            <div
+                                v-if="showYearSelector"
+                                class="absolute top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10 max-h-32 sm:max-h-48 overflow-y-auto w-20 sm:w-24"
+                            >
+                                <button
+                                    type="button"
+                                    v-for="year in availableYears"
+                                    :key="year"
+                                    @click="handleYearSelect(year)"
+                                    :class="[
+                                        'block w-full px-2 sm:px-4 py-1 sm:py-2 text-left text-xs sm:text-sm text-gray-700',
+                                        themeClasses.dropdown.item,
+                                        {
+                                            [themeClasses.dropdown.selected]:
+                                                year ===
+                                                currentDate.getFullYear(),
+                                        },
+                                    ]"
+                                >
+                                    {{ year }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button
+                        type="button"
+                        @click="nextMonth"
+                        :class="['p-1 rounded-full', themeClasses.buttonHover]"
+                    >
+                        <ChevronRight class="h-4 w-4 sm:h-5 sm:w-5" />
+                    </button>
+                </div>
+
+                <!-- Días de la semana -->
+                <div class="grid grid-cols-7 gap-1 mb-1 sm:mb-2">
+                    <div
+                        v-for="(day, index) in weekdays"
+                        :key="index"
+                        class="text-center text-xs sm:text-sm font-medium text-gray-600"
+                    >
+                        {{ day }}
+                    </div>
+                </div>
+
+                <!-- Días del mes -->
+                <div class="grid grid-cols-7 gap-1">
+                    <button
+                        v-for="(day, index) in calendarDays"
+                        :key="index"
+                        @click="selectDay(day)"
+                        :disabled="isDateDisabled(day)"
+                        type="button"
+                        :class="[
+                            'w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-xs sm:text-sm',
+                            isDateSelected(day)
+                                ? themeClasses.selected
+                                : day.isCurrentMonth
+                                  ? `text-gray-800 ${themeClasses.hover}`
+                                  : 'text-gray-400',
+                            isDateDisabled(day)
+                                ? 'cursor-not-allowed opacity-50'
+                                : 'cursor-pointer',
+                        ]"
+                    >
+                        {{ day.day }}
+                    </button>
+                </div>
+
+                <!-- Acciones rápidas -->
+                <div
+                    class="flex justify-between mt-2 sm:mt-4 pt-2 border-t border-gray-200"
                 >
-                    Limpiar
-                </button>
-                <button
-                    @click="goToToday"
-                    :class="[
-                        'text-xs sm:text-sm font-medium',
-                        themeClasses.accent,
-                    ]"
-                    type="button"
-                    :disabled="disabled"
-                >
-                    Hoy
-                </button>
+                    <button
+                        @click="clearDate"
+                        :class="['text-xs sm:text-sm', themeClasses.accent]"
+                        type="button"
+                        :disabled="disabled"
+                    >
+                        Limpiar
+                    </button>
+                    <button
+                        @click="goToToday"
+                        :class="[
+                            'text-xs sm:text-sm font-medium',
+                            themeClasses.accent,
+                        ]"
+                        type="button"
+                        :disabled="disabled"
+                    >
+                        Hoy
+                    </button>
+                </div>
             </div>
         </div>
     </div>
