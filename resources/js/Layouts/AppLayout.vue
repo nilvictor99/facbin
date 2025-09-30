@@ -82,6 +82,12 @@
                                 >
                                     Clientes
                                 </NavLink>
+                                <NavLink
+                                    :href="route('products.index')"
+                                    :active="route().current('products.index')"
+                                >
+                                    Productos
+                                </NavLink>
                             </div>
                         </div>
 

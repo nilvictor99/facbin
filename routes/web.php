@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -32,5 +33,10 @@ Route::middleware([
     Route::controller(CustomerController::class)->group(function () {
         Route::get('/customer', 'index')->name('customers.index');
         Route::get('/customer/list', 'list')->name('customers.list');
+    });
+
+    Route::controller(ProductController::class)->group(function () {
+        Route::get('/product', 'index')->name('products.index');
+        Route::get('/product/list', 'list')->name('products.list');
     });
 });
