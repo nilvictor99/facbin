@@ -15,12 +15,12 @@ return new class extends Migration
             $table->id();
             $table->foreignId('inventory_id')->constrained('inventories');
             $table->foreignId('product_id')->constrained('products');
-            $table->integer('starting_amount');
-            $table->integer('ending_amount');
-            $table->integer('difference');
+            $table->decimal('starting_amount', 10, 2);
+            $table->decimal('ending_amount', 10, 2);
+            $table->decimal('difference', 10, 2);
             $table->string('movement_type');
             $table->text('observation')->nullable();
-            $table->integer('product_stock');
+            $table->decimal('product_stock', 10, 2);
             $table->timestamps();
         });
     }

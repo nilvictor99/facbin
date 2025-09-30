@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
@@ -38,5 +39,10 @@ Route::middleware([
     Route::controller(ProductController::class)->group(function () {
         Route::get('/product', 'index')->name('products.index');
         Route::get('/product/list', 'list')->name('products.list');
+    });
+
+    Route::controller(InventoryController::class)->group(function () {
+        Route::get('/inventory', 'index')->name('inventory.index');
+        Route::get('/inventory/list', 'list')->name('inventory.list');
     });
 });
