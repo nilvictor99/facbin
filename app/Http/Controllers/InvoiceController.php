@@ -3,61 +3,68 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
+use App\Services\Models\InvoiceService;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class InvoiceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    private $invoiceService;
+
+    public function __construct(InvoiceService $invoiceService)
     {
-        //
+        $this->invoiceService = $invoiceService;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    public function index()
+    {
+        return Inertia::render('Invoice');
+    }
+
+    public function list(Request $request)
+    {
+        $search = $request->input('search');
+        $startDate = $request->input('start');
+        $endDate = $request->input('end');
+        $perPage = $request->input('per_page', 5);
+        $data = $this->invoiceService->getModel($search, $startDate, $endDate, $perPage);
+
+        return Inertia::render('Invoice/List', [
+            'data' => $data,
+            'search' => $search,
+            'dateRange' => [
+                'start' => $startDate,
+                'end' => $endDate,
+            ],
+            'perPage' => $perPage,
+        ]);
+    }
+
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Invoice $invoice)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Invoice $invoice)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Invoice $invoice)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Invoice $invoice)
     {
         //

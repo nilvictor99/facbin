@@ -94,6 +94,12 @@
                                 >
                                     Inventarios
                                 </NavLink>
+                                <NavLink
+                                    :href="route('invoices.index')"
+                                    :active="route().current('invoices.index')"
+                                >
+                                    Comprobantes
+                                </NavLink>
                             </div>
                         </div>
 

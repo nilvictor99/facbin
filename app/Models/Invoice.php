@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -53,5 +54,46 @@ class Invoice extends Model
     public function details(): HasMany
     {
         return $this->hasMany(InvoiceDetail::class);
+    }
+
+    public function scopeWithRelations($query)
+    {
+        return $query->with(['customer.profile']);
+    }
+
+    public function scopeSearchInvoiceData(Builder $query, $search)
+    {
+        return $query->where(function ($q) use ($search) {
+            $q->where('serie', 'ILIKE', "%{$search}%")
+                ->orWhereHas('customer.profile', function ($q2) use ($search) {
+                    $q2->where('full_name', 'ILIKE', "%{$search}%")
+                        ->orWhere('document_number', 'ILIKE', "%{$search}%");
+                });
+        });
+    }
+
+    public function scopeSearchData(Builder $query, $search = null, $startDate = null, $endDate = null)
+    {
+        if (! empty($search)) {
+            $query->searchInvoiceData($search);
+        }
+        if (! empty($startDate) || ! empty($endDate)) {
+            $query->filterByDateRange($startDate, $endDate);
+        }
+
+        return $query;
+    }
+
+    public function scopeFilterByDateRange(Builder $query, $startDate, $endDate)
+    {
+        if (! empty($startDate)) {
+            $query->whereDate('created_at', '>=', $startDate);
+        }
+
+        if (! empty($endDate)) {
+            $query->whereDate('created_at', '<=', $endDate);
+        }
+
+        return $query;
     }
 }

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
@@ -39,6 +40,11 @@ Route::middleware([
     Route::controller(ProductController::class)->group(function () {
         Route::get('/product', 'index')->name('products.index');
         Route::get('/product/list', 'list')->name('products.list');
+    });
+
+    Route::controller(InvoiceController::class)->group(function () {
+        Route::get('/invoice', 'index')->name('invoices.index');
+        Route::get('/invoice/list', 'list')->name('invoices.list');
     });
 
     Route::controller(InventoryController::class)->group(function () {
