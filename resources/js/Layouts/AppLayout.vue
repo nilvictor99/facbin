@@ -88,6 +88,12 @@
                                 >
                                     Productos
                                 </NavLink>
+                                <NavLink
+                                    :href="route('inventory.index')"
+                                    :active="route().current('inventory.index')"
+                                >
+                                    Inventarios
+                                </NavLink>
                             </div>
                         </div>
 
