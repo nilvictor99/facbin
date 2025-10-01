@@ -17,4 +17,9 @@ class IdentificationType extends Model
     {
         return $query->whereIn('code', ['1', '6'])->pluck('id')->toArray();
     }
+
+    public function scopeSimpleData(Builder $query)
+    {
+        return $query->select('id', 'code', 'name')->get();
+    }
 }

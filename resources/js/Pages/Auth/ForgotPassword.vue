@@ -3,7 +3,7 @@
     import AuthenticationCard from '@/Components/Cards/AuthenticationCard.vue';
     import AuthenticationCardLogo from '@/Components/Utils/AuthenticationCardLogo.vue';
     import InputError from '@/Components/Inputs/InputError.vue';
-    import InputLabel from '@/Components/Inputs/InputLabel.vue';
+    import InputLabel from '@/Components/Inputs/Label.vue';
     import PrimaryButton from '@/Components/Buttons/PrimaryButton.vue';
     import TextInput from '@/Components/Inputs/TextInput.vue';
 

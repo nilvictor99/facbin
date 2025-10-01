@@ -125,7 +125,9 @@
                                         }}
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-900">
-                                        {{ invoice.customer.profile.full_name }}
+                                        {{
+                                            invoice.customer?.profile?.full_name
+                                        }}
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-900">
                                         S/. {{ invoice.total }}

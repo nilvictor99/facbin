@@ -4,7 +4,7 @@
     import ActionMessage from '@/Components/Actions/ActionMessage.vue';
     import FormSection from '@/Components/Sections/FormSection.vue';
     import InputError from '@/Components/Inputs/InputError.vue';
-    import InputLabel from '@/Components/Inputs/InputLabel.vue';
+    import InputLabel from '@/Components/Inputs/Label.vue';
     import PrimaryButton from '@/Components/Buttons/PrimaryButton.vue';
     import SecondaryButton from '@/Components/Buttons/SecondaryButton.vue';
     import TextInput from '@/Components/Inputs/TextInput.vue';

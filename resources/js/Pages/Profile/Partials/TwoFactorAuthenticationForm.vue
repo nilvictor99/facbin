@@ -5,7 +5,7 @@
     import ConfirmsPassword from '@/Components/Modals/ConfirmsPassword.vue';
     import DangerButton from '@/Components/Buttons/DangerButton.vue';
     import InputError from '@/Components/Inputs/InputError.vue';
-    import InputLabel from '@/Components/Inputs/InputLabel.vue';
+    import InputLabel from '@/Components/Inputs/Label.vue';
     import PrimaryButton from '@/Components/Buttons/PrimaryButton.vue';
     import SecondaryButton from '@/Components/Buttons/SecondaryButton.vue';
     import TextInput from '@/Components/Inputs/TextInput.vue';
