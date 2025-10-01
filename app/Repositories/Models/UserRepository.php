@@ -29,4 +29,27 @@ class UserRepository extends BaseRepository
     {
         return $this->model->all();
     }
+
+    public function StoreUser($data)
+    {
+        $userData = [
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => $data['password'],
+        ];
+
+        $user = $this->model->create($userData);
+        $profileData = [
+            'identification_type_id' => $data['identification_type_id'] ?? null,
+            'document_number' => $data['document_number'] ?? null,
+            'paternal_surname' => $data['paternal_surname'] ?? null,
+            'maternal_surname' => $data['maternal_surname'] ?? null,
+            'gender' => $data['gender'] ?? null,
+            'date_of_birth' => $data['date_of_birth'] ?? null,
+            'full_name' => $data['name'].' '.($data['paternal_surname'] ?? '').' '.($data['maternal_surname'] ?? ''),
+        ];
+        $user->profile()->create($profileData);
+
+        return $user;
+    }
 }

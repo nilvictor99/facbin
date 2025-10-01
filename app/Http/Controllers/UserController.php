@@ -59,7 +59,9 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->all());
+        $this->userService->StoreUser($request->all());
+
+        return redirect()->route('users.list')->banner('Usuario creado');
     }
 
     public function show(User $user)
