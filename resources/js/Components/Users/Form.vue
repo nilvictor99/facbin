@@ -28,20 +28,13 @@
         name: props.data.name || '',
         email: props.data.email || '',
         password: '',
-
         identification_type_id:
             props.data.profile?.identification_type_id || '',
         document_number: props.data.profile?.document_number || '',
         paternal_surname: props.data.profile?.paternal_surname || '',
         maternal_surname: props.data.profile?.maternal_surname || '',
-        full_name: props.data.profile?.full_name || '',
         gender: props.data.profile?.gender || '',
         date_of_birth: props.data.profile?.date_of_birth || '',
-        civil_status: props.data.profile?.civil_status || '',
-        education_level: props.data.profile?.education_level || '',
-        blood_type: props.data.profile?.blood_type || '',
-        description: props.data.profile?.description || '',
-        active: props.data.profile?.active ?? true,
     });
 
     const submitForm = () => {
@@ -75,15 +68,8 @@
                         newData.profile.paternal_surname || '';
                     form.maternal_surname =
                         newData.profile.maternal_surname || '';
-                    form.full_name = newData.profile.full_name || '';
                     form.gender = newData.profile.gender || '';
                     form.date_of_birth = newData.profile.date_of_birth || '';
-                    form.civil_status = newData.profile.civil_status || '';
-                    form.education_level =
-                        newData.profile.education_level || '';
-                    form.blood_type = newData.profile.blood_type || '';
-                    form.description = newData.profile.description || '';
-                    form.active = newData.profile.active ?? true;
                 }
             }
         },
@@ -195,7 +181,7 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
             <div>
                 <InputDateClasic
-                    v-model="fecha"
+                    v-model="form.date_of_birth"
                     label="Fecha de Nacimiento"
                     theme="gray"
                     size="base"

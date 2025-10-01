@@ -281,24 +281,12 @@
 
     const handleInputChange = event => {
         const value = event.target.value;
-        inputValue.value = value;
         if (isValidDateFormat(value)) {
-            const date = parseDate(value);
-            if (
-                !selectedDate.value ||
-                selectedDate.value.getTime() !== date.getTime()
-            ) {
-                selectedDate.value = date;
-                currentDate.value = new Date(
-                    date.getFullYear(),
-                    date.getMonth(),
-                    1
-                );
-                emit('change', formatDateForModel(date));
-            }
-        } else if (value === '') {
-            selectedDate.value = null;
-            emit('change', '');
+            const parsed = parseDate(value);
+            selectedDate.value = parsed;
+            emit('update:modelValue', formatDateForModel(parsed)); // Agregar esta línea
+        } else {
+            inputValue.value = value;
         }
     };
 
@@ -327,6 +315,7 @@
         const date = new Date(day.year, day.month, day.day);
         selectedDate.value = date;
         inputValue.value = formatDateForDisplay(formatDateForModel(date));
+        emit('update:modelValue', formatDateForModel(date)); // Agregar esta línea
         emit('change', formatDateForModel(date));
         showCalendar.value = false;
     };
@@ -335,17 +324,15 @@
         selectedDate.value = null;
         inputValue.value = '';
         currentDate.value = new Date(currentYear, currentMonth, 1);
-        emit('change', '');
+        emit('update:modelValue', '');
     };
 
     const goToToday = () => {
         const today = getCurrentDate();
+        selectedDate.value = today;
+        inputValue.value = formatDateForDisplay(formatDateForModel(today));
         currentDate.value = new Date(today.getFullYear(), today.getMonth(), 1);
-        if (!props.disabled) {
-            selectedDate.value = today;
-            inputValue.value = formatDateForDisplay(formatDateForModel(today));
-            emit('change', formatDateForModel(today));
-        }
+        emit('update:modelValue', formatDateForModel(today)); // Agregar esta línea
     };
 
     // isDateDisabled con validación de minDate y maxDate
