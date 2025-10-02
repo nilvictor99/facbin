@@ -76,7 +76,7 @@
                 focus:
                     props.focusColor ||
                     'focus:border-orange-500 focus:ring-orange-200',
-                hover: 'hover:border-orange-500 hover:ring-orange-100',
+                hover: 'hover:border-orange-500 hover:ring-orange-100 focus:ring-2',
                 badgeBg: 'bg-orange-100',
                 badgeText: 'text-gray-800',
                 optionSelected: 'bg-orange-50 text-orange-700',
@@ -90,7 +90,7 @@
                 focus:
                     props.focusColor ||
                     'focus:border-red-500 focus:ring-red-200',
-                hover: 'hover:border-red-500 hover:ring-red-100',
+                hover: 'hover:border-red-500 hover:ring-red-100 focus:ring-2',
                 badgeBg: 'bg-red-100',
                 badgeText: 'text-red-700',
                 optionSelected: 'bg-red-50 text-red-700',
@@ -104,7 +104,7 @@
                 focus:
                     props.focusColor ||
                     'focus:border-green-500 focus:ring-green-200',
-                hover: 'hover:border-green-500 hover:ring-green-100',
+                hover: 'hover:border-green-500 hover:ring-green-100 focus:ring-2',
                 badgeBg: 'bg-green-100',
                 badgeText: 'text-green-700',
                 optionSelected: 'bg-green-50 text-green-700',
@@ -118,7 +118,7 @@
                 focus:
                     props.focusColor ||
                     'focus:border-yellow-500 focus:ring-yellow-200',
-                hover: 'hover:border-yellow-500 hover:ring-yellow-100',
+                hover: 'hover:border-yellow-500 hover:ring-yellow-100 focus:ring-2',
                 badgeBg: 'bg-yellow-100',
                 badgeText: 'text-yellow-700',
                 optionSelected: 'bg-yellow-50 text-yellow-700',
@@ -128,11 +128,11 @@
                 dropdownBorder: 'border-yellow-200',
             },
             gray: {
-                base: 'border-gray-400 text-gray-600',
+                base: 'border-gray-300 text-gray-600',
                 focus:
                     props.focusColor ||
-                    'focus:border-gray-500 focus:ring-gray-200',
-                hover: 'hover:border-gray-500 hover:ring-gray-100',
+                    'focus:border-gray-300 focus:ring-gray-300',
+                hover: 'hover:border-gray-300 hover:ring-gray-100 focus:ring-2',
                 badgeBg: 'bg-gray-100',
                 badgeText: 'text-gray-700',
                 optionSelected: 'bg-gray-50 text-gray-700',
@@ -146,7 +146,7 @@
                 focus:
                     props.focusColor ||
                     'focus:border-gray-300 focus:ring-gray-200',
-                hover: 'hover:border-gray-300 hover:ring-gray-100',
+                hover: 'hover:border-gray-300 hover:ring-gray-100 focus:ring-2',
                 badgeBg: 'bg-gray-100',
                 badgeText: 'text-gray-700',
                 optionSelected: 'bg-gray-50 text-gray-700',
@@ -160,7 +160,7 @@
                 focus:
                     props.focusColor ||
                     'focus:border-purple-500 focus:ring-purple-200',
-                hover: 'hover:border-purple-500 hover:ring-purple-100',
+                hover: 'hover:border-purple-500 hover:ring-purple-100 focus:ring-2',
                 badgeBg: 'bg-purple-100',
                 badgeText: 'text-purple-700',
                 optionSelected: 'bg-purple-50 text-purple-700',
@@ -174,7 +174,7 @@
                 focus:
                     props.focusColor ||
                     'focus:border-blue-500 focus:ring-blue-200',
-                hover: 'hover:border-blue-500 hover:ring-blue-100',
+                hover: 'hover:border-blue-500 hover:ring-blue-100 focus:ring-2',
                 badgeBg: 'bg-blue-100',
                 badgeText: 'text-blue-700',
                 optionSelected: 'bg-blue-50 text-blue-700',

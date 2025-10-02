@@ -12,4 +12,9 @@ class UbigeoRepository extends BaseRepository
     {
         parent::__construct($ubigeo, self::RELATIONS);
     }
+
+    public function searchData($query)
+    {
+        return $this->model->searchData($query)->take(10)->get();
+    }
 }

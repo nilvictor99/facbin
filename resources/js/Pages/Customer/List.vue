@@ -7,6 +7,8 @@
     import PerPageSelector from '@/Components/Utils/PerPageSelector.vue';
     import SectionDateRangeFilter from '@/Components/Sections/SectionDateRangeFilter.vue';
     import InputSelectClasic from '@/Components/Inputs/InputSelectClasic.vue';
+    import ClasicButton from '@/Components/Buttons/ClasicButton.vue';
+    import UserPlus from '@/Components/Icons/UserPlus.vue';
 
     const props = defineProps({
         data: {
@@ -116,6 +118,20 @@
                             @search="handleSearch"
                             class="flex-1"
                         />
+
+                        <ClasicButton
+                            :roles="['super usuario', 'super_admin', 'Staff']"
+                            :permissions="[]"
+                            @click="
+                                () => router.visit(route('customers.create'))
+                            "
+                            class="flex-1 sm:flex-none w-full sm:w-auto flex justify-center"
+                        >
+                            <div class="flex flex-row items-center">
+                                <UserPlus class="w-5 h-5 mr-2" />
+                                <span>Create Customer</span>
+                            </div>
+                        </ClasicButton>
                     </div>
 
                     <div class="overflow-x-auto">

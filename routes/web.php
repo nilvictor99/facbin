@@ -4,6 +4,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\UbigeoController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -27,6 +28,10 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
+    Route::controller(UbigeoController::class)->group(function () {
+        Route::get('/search', 'search')->name('ubigeos.search');
+    });
+
     Route::controller(UserController::class)->group(function () {
         Route::get('/user', 'index')->name('users.index');
         Route::get('/user/list', 'list')->name('users.list');
@@ -37,6 +42,8 @@ Route::middleware([
     Route::controller(CustomerController::class)->group(function () {
         Route::get('/customer', 'index')->name('customers.index');
         Route::get('/customer/list', 'list')->name('customers.list');
+        Route::get('/customer/create', 'create')->name('customers.create');
+        Route::post('/customer/store', 'store')->name('customers.store');
     });
 
     Route::controller(ProductController::class)->group(function () {
