@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Attributes\SearchUsingFullText;
 use Laravel\Scout\Searchable;
@@ -41,5 +42,12 @@ class Ubigeo extends Model
     public function getFullUbigeoAttribute(): string
     {
         return "{$this->departament} - {$this->province} - {$this->district}";
+    }
+
+    public function scopeSearchData(Builder $query, $searchTerm)
+    {
+        return $query->where('district', 'LIKE', "%{$searchTerm}%")
+            ->orWhere('province', 'LIKE', "%{$searchTerm}%")
+            ->orWhere('cod_ubigeo', 'LIKE', "%{$searchTerm}%");
     }
 }

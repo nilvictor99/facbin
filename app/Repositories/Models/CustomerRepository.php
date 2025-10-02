@@ -3,14 +3,18 @@
 namespace App\Repositories\Models;
 
 use App\Models\Customer;
+use App\Services\Utils\CodeGeneratorService;
 
 class CustomerRepository extends BaseRepository
 {
+    protected $CodeGeneratorService;
+
     const RELATIONS = [];
 
-    public function __construct(Customer $model)
+    public function __construct(Customer $model, CodeGeneratorService $CodeGeneratorService)
     {
         parent::__construct($model, self::RELATIONS);
+        $this->CodeGeneratorService = $CodeGeneratorService;
     }
 
     public function getModel($search = null, $startDate = null, $endDate = null, $customerId = null, $perPage = 5)
@@ -27,5 +31,36 @@ class CustomerRepository extends BaseRepository
     public function getCustomers()
     {
         return $this->model->withProfile()->get();
+    }
+
+    public function storeData(array $data)
+    {
+        $customer = $this->model->create(['code' => $this->CodeGeneratorService->generate('alphanumeric', 8)]);
+
+        $profileData = [
+            'identification_type_id' => $data['identification_type_id'] ?? null,
+            'document_number' => $data['document_number'] ?? null,
+            'paternal_surname' => $data['paternal_surname'] ?? null,
+            'maternal_surname' => $data['maternal_surname'] ?? null,
+            'gender' => $data['gender'] ?? null,
+            'date_of_birth' => $data['date_of_birth'] ?? null,
+            'full_name' => $data['name'].' '.($data['paternal_surname'] ?? '').' '.($data['maternal_surname'] ?? ''),
+        ];
+        $customer->profile()->create($profileData);
+
+        $addressData = [
+            'ubigeo_cod' => $data['ubigeo_cod'] ?? null,
+            'address' => $data['address'] ?? null,
+            'reference' => $data['reference'] ?? null,
+        ];
+        $customer->address()->create($addressData);
+
+        $contactData = [
+            'contact_type' => $data['contact_type'] ?? null,
+            'contact_value' => $data['contact_value'] ?? null,
+        ];
+        $customer->contacts()->create($contactData);
+
+        return $customer;
     }
 }

@@ -2,18 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CustomerRequest;
 use App\Models\Customer;
 use App\Services\Models\CustomerService;
+use App\Services\Models\IdentificationTypeService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class CustomerController extends Controller
 {
+    private $IdentificationTypeService;
+
     private $customerService;
 
-    public function __construct(CustomerService $customerService)
+    public function __construct(CustomerService $customerService, IdentificationTypeService $IdentificationTypeService)
     {
         $this->customerService = $customerService;
+        $this->IdentificationTypeService = $IdentificationTypeService;
     }
 
     public function index()
@@ -46,12 +51,18 @@ class CustomerController extends Controller
 
     public function create()
     {
-        //
+        $identificationTypes = $this->IdentificationTypeService->getSimpleData();
+
+        return Inertia::render('Customer/Create', [
+            'identificationTypes' => $identificationTypes,
+        ]);
     }
 
-    public function store(Request $request)
+    public function store(CustomerRequest $request)
     {
-        //
+        $this->customerService->storeData($request->validated());
+
+        return redirect()->route('customers.index')->banner('Cliente creado');
     }
 
     public function show(Customer $customer)
