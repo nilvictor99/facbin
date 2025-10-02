@@ -53,7 +53,9 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->all());
+        $this->productService->storeData($request->all());
+
+        return redirect()->route('products.index')->banner('Producto creado ');
     }
 
     public function show(Product $product)
