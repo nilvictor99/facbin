@@ -16,9 +16,10 @@
         displayConfig: {
             type: Object,
             default: () => ({
-                mainField: 'profile.full_name',
-                secondaryField: 'profile.document_number',
-                imageUrl: '/system/images/userimage.webp',
+                mainField: 'name',
+                secondaryField: 'description',
+                imageUrl: '',
+                uniqueId: 'id',
             }),
         },
         initialValue: {
@@ -211,14 +212,14 @@
     watch(searchTerm, async newValue => {
         if (newValue.length > 0) {
             try {
-                const searchUrl = props.searchRoute.includes('://')
-                    ? props.searchRoute
-                    : route(props.searchRoute);
-
-                const response = await axios.get(searchUrl, {
+                const response = await axios.get(route(props.searchRoute), {
                     params: { query: newValue },
                 });
-                filteredResults.value = response.data.data;
+                filteredResults.value = Array.isArray(response.data)
+                    ? response.data
+                    : Array.isArray(response.data.data)
+                      ? response.data.data
+                      : [];
             } catch (error) {
                 console.error('Error searching:', error);
                 filteredResults.value = [];
@@ -231,9 +232,13 @@
     const selectItem = item => {
         emit('select', item);
         searchTerm.value =
-            getNestedValue(item, props.displayConfig.mainField) ||
-            item.name ||
-            '';
+            getNestedValue(item, props.displayConfig.mainField) || '';
+        const uniqueIdValue = getNestedValue(
+            item,
+            props.displayConfig.uniqueId
+        );
+        emit('update:modelValue', uniqueIdValue);
+
         filteredResults.value = [];
     };
 
@@ -290,7 +295,7 @@
         >
             <li
                 v-for="item in filteredResults"
-                :key="item.cod_ubigeo"
+                :key="getNestedValue(item, displayConfig.uniqueId)"
                 @click="selectItem(item)"
                 class="px-2 py-1 text-gray-100 cursor-pointer hover:bg-indigo-500/30"
             >

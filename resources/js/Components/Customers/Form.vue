@@ -236,30 +236,18 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 <div>
                     <InputSearchList
-                        v-model="ubigeoDisplay"
-                        :label="'Ubigeo'"
-                        :searchRoute="'ubigeos.search'"
-                        placeholder="Buscar ubigeo..."
+                        search-route="ubigeos.search"
+                        label="Ubigeo"
+                        v-model="form.ubigeo_cod"
+                        :initial-value="ubigeoInitialValue"
                         size="base"
-                        theme="gray"
-                        :displayConfig="{
+                        placeholder="Buscar ubigeo por nombre o código"
+                        :display-config="{
                             mainField: 'full_ubigeo',
                             secondaryField: 'cod_ubigeo',
+                            uniqueId: 'cod_ubigeo',
                         }"
-                        :initialValue="ubigeoInitialValue"
-                        :cleanButton="true"
-                        @select="
-                            item => {
-                                form.ubigeo_cod = item ? item.cod_ubigeo : '';
-                                ubigeoDisplay = item ? item.full_ubigeo : '';
-                            }
-                        "
-                        @cleared="
-                            () => {
-                                form.ubigeo_cod = '';
-                                ubigeoDisplay = '';
-                            }
-                        "
+                        :clean-button="true"
                     />
                     <InputError :message="form.errors.ubigeo_cod" />
                 </div>

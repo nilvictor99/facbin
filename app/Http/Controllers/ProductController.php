@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Services\Models\CurrencyService;
 use App\Services\Models\ProductService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -11,9 +12,12 @@ class ProductController extends Controller
 {
     private $productService;
 
-    public function __construct(ProductService $productService)
+    private $currencyService;
+
+    public function __construct(ProductService $productService, CurrencyService $currencyService)
     {
         $this->productService = $productService;
+        $this->currencyService = $currencyService;
     }
 
     public function index()
@@ -42,12 +46,14 @@ class ProductController extends Controller
 
     public function create()
     {
-        //
+        return Inertia::render('Product/Create', [
+            'currencies' => $this->currencyService->getAll(),
+        ]);
     }
 
     public function store(Request $request)
     {
-        //
+        dd($request->all());
     }
 
     public function show(Product $product)
