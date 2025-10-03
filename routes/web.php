@@ -42,6 +42,8 @@ Route::middleware([
         Route::get('/user/list', 'list')->name('users.list');
         Route::get('/user/create', 'create')->name('users.create');
         Route::post('/user/store', 'store')->name('users.store');
+        Route::get('/user/{id}/edit', 'edit')->name('users.edit');
+        Route::put('/user/{id}/update', 'update')->name('users.update');
     });
 
     Route::controller(CustomerController::class)->group(function () {

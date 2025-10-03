@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\TypeUserEnum;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\IdentificationType;
 use App\Models\User;
@@ -66,7 +67,7 @@ class UserResource extends Resource
                 Section::make(__('user.Security'))
                     ->icon('heroicon-m-adjustments-vertical')
                     ->collapsible()
-                    ->columns(1)
+                    ->columns(2)
                     ->schema([
                         Forms\Components\TextInput::make('password')
                             ->translateLabel()
@@ -82,24 +83,11 @@ class UserResource extends Resource
                                     })
                             )
                             ->maxLength(255),
-                    ]),
-                Forms\Components\Repeater::make('profile')
-                    ->translateLabel()
-                    ->relationship('profile')
-                    ->deletable(false)
-                    ->schema([
-                        Forms\Components\Select::make('identification_type_id')
+                        Forms\Components\Select::make('type_user')
                             ->translateLabel()
-                            ->searchable()
+                            ->options(TypeUserEnum::Options())
                             ->preload()
-                            ->live()
-                            ->default(2)
-                            ->relationship('identificationType', 'name')
-                            ->required(),
-                        Forms\Components\TextInput::make('document_number')
-                            ->translateLabel()
                             ->required()
-                            ->unique(table: 'profiles', column: 'document_number', ignoreRecord: true)
                             ->disabled(fn (callable $get) => $get('is_disabled') ?? false)
                             ->afterStateHydrated(function (mixed $component, mixed $state, callable $set, string $context) {
                                 if ($context === 'edit') {
@@ -115,92 +103,143 @@ class UserResource extends Resource
                                     })
                                     ->visible(fn (string $context): bool => $context === 'edit')
                             )
+                            ->default(TypeUserEnum::SIMPLE->value)
                             ->live()
-                            ->suffixAction(
-                                Forms\Components\Actions\Action::make('generate')
-                                    ->icon('heroicon-m-magnifying-glass')
-                                    ->action(function (?string $state, callable $set, callable $get) {
-                                        app(IdentificationService::class)->setFullNameAndAddress($state, $set, $get);
+                            ->searchable(),
+                    ]),
+
+                Section::make(__('user.Aditional_information'))
+                    ->icon('heroicon-m-adjustments-vertical')
+                    ->collapsible()
+                    ->hidden(fn (callable $get): bool => $get('type_user') === TypeUserEnum::SIMPLE->value)
+                    ->schema([
+                        Forms\Components\Repeater::make('profile')
+                            ->translateLabel()
+                            ->relationship('profile')
+                            ->deletable(false)
+                            ->schema([
+                                Forms\Components\Select::make('identification_type_id')
+                                    ->translateLabel()
+                                    ->searchable()
+                                    ->preload()
+                                    ->live()
+                                    ->default(2)
+                                    ->relationship('identificationType', 'name')
+                                    ->required(),
+                                Forms\Components\TextInput::make('document_number')
+                                    ->translateLabel()
+                                    ->required()
+                                    ->unique(table: 'profiles', column: 'document_number', ignoreRecord: true)
+                                    ->disabled(fn (callable $get) => $get('is_disabled') ?? false)
+                                    ->afterStateHydrated(function (mixed $component, mixed $state, callable $set, string $context) {
+                                        if ($context === 'edit') {
+                                            $set('is_disabled', true);
+                                        }
                                     })
-                                    ->visible(
-                                        fn (callable $get, string $context): bool => in_array($get('identification_type_id'), IdentificationType::dniRuc()) &&
-                                            $context !== 'view' &&
-                                            ($context !== 'edit' || ! ($get('is_disabled') ?? true))
-                                    ),
-                            )->extraAttributes(fn (Forms\Components\TextInput $component) => [
-                                'wire:keydown.enter.prevent' => "mountFormComponentAction('{$component->getStatePath()}', 'generate')",
-                            ])
-                            ->maxLength(11),
-                        Forms\Components\TextInput::make('full_name')
-                            ->translateLabel()
-                            ->required()
-                            ->maxLength(255),
-                        Forms\Components\Textarea::make('description')
-                            ->translateLabel()
-                            ->autosize()
-                            ->rows(1)
-                            ->maxLength(255),
-
-                    ])
-                    ->minItems(1)
-                    ->columns(3)
-                    ->addable(false)
-                    ->maxItems(1),
-                Forms\Components\Repeater::make('address')
-                    ->translateLabel()
-                    ->relationship('address')
-                    ->collapsible()
-                    ->schema([
-                        Forms\Components\Select::make('ubigeo_cod')
-                            ->translateLabel()
-                            ->default('080101')
-                            ->searchable()
-                            ->placeholder('Buscar por distrito o provincia')
-                            ->getSearchResultsUsing(function (string $search) {
-                                return app(UbigeoService::class)
-                                    ->search($search)
-                                    ->mapWithKeys(fn ($ubigeo) => [
-                                        $ubigeo->cod_ubigeo => "{$ubigeo->district} ({$ubigeo->province}, {$ubigeo->departament})",
+                                    ->prefixAction(
+                                        Forms\Components\Actions\Action::make('toggleEdit')
+                                            ->icon(fn (callable $get) => $get('is_disabled') ? 'heroicon-m-lock-closed' : 'heroicon-m-lock-open')
+                                            ->tooltip(fn (callable $get) => $get('is_disabled') ? 'Habilitar edición' : 'Deshabilitar edición')
+                                            ->action(function (callable $set, callable $get) {
+                                                $set('is_disabled', ! $get('is_disabled'));
+                                            })
+                                            ->visible(fn (string $context): bool => $context === 'edit')
+                                    )
+                                    ->live()
+                                    ->suffixAction(
+                                        Forms\Components\Actions\Action::make('generate')
+                                            ->icon('heroicon-m-magnifying-glass')
+                                            ->action(function (?string $state, callable $set, callable $get) {
+                                                app(IdentificationService::class)->setFullNameAndAddress($state, $set, $get);
+                                            })
+                                            ->visible(
+                                                fn (callable $get, string $context): bool => in_array($get('identification_type_id'), IdentificationType::dniRuc()) &&
+                                                    $context !== 'view' &&
+                                                    ($context !== 'edit' || ! ($get('is_disabled') ?? true))
+                                            ),
+                                    )->extraAttributes(fn (Forms\Components\TextInput $component) => [
+                                        'wire:keydown.enter.prevent' => "mountFormComponentAction('{$component->getStatePath()}', 'generate')",
                                     ])
-                                    ->toArray();
-                            })
-                            ->getOptionLabelUsing(function ($value) {
-                                $ubigeo = app(UbigeoService::class)
-                                    ->search($value)
-                                    ->first();
+                                    ->maxLength(11),
+                                Forms\Components\TextInput::make('name')
+                                    ->translateLabel()
+                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('paternal_surname')
+                                    ->translateLabel()
+                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('maternal_surname')
+                                    ->translateLabel()
+                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\Textarea::make('description')
+                                    ->translateLabel()
+                                    ->autosize()
+                                    ->rows(1)
+                                    ->maxLength(255),
 
-                                return $ubigeo ? "{$ubigeo->district} ({$ubigeo->province}, {$ubigeo->departament})" : '';
-                            }),
-                        Forms\Components\TextInput::make('address')
-                            ->translateLabel(),
-                        Forms\Components\Textarea::make('reference')
+                            ])
+                            ->minItems(1)
+                            ->columns(3)
+                            ->addable(false)
+                            ->maxItems(1),
+                        Forms\Components\Repeater::make('address')
                             ->translateLabel()
-                            ->autosize()
-                            ->rows(2)
-                            ->maxLength(255),
-                    ])->columns(3),
-                Forms\Components\Repeater::make('contacts')
-                    ->translateLabel()
-                    ->relationship('contacts')
-                    ->collapsible()
-                    ->schema([
-                        Forms\Components\TextInput::make('contact_type')
+                            ->relationship('address')
+                            ->collapsible()
+                            ->schema([
+                                Forms\Components\Select::make('ubigeo_cod')
+                                    ->translateLabel()
+                                    ->default('080101')
+                                    ->searchable()
+                                    ->placeholder('Buscar por distrito o provincia')
+                                    ->getSearchResultsUsing(function (string $search) {
+                                        return app(UbigeoService::class)
+                                            ->search($search)
+                                            ->mapWithKeys(fn ($ubigeo) => [
+                                                $ubigeo->cod_ubigeo => "{$ubigeo->district} ({$ubigeo->province}, {$ubigeo->departament})",
+                                            ])
+                                            ->toArray();
+                                    })
+                                    ->getOptionLabelUsing(function ($value) {
+                                        $ubigeo = app(UbigeoService::class)
+                                            ->search($value)
+                                            ->first();
+
+                                        return $ubigeo ? "{$ubigeo->district} ({$ubigeo->province}, {$ubigeo->departament})" : '';
+                                    }),
+                                Forms\Components\TextInput::make('address')
+                                    ->translateLabel(),
+                                Forms\Components\Textarea::make('reference')
+                                    ->translateLabel()
+                                    ->autosize()
+                                    ->rows(2)
+                                    ->maxLength(255),
+                            ])->columns(3),
+                        Forms\Components\Repeater::make('contacts')
                             ->translateLabel()
-                            ->maxLength(50)
-                            ->default('Personal')
-                            ->nullable(),
-                        CountryCodeSelect::make('country_code')
-                            ->default('+51')
-                            ->translateLabel(),
-                        Forms\Components\TextInput::make('contact_value')
-                            ->translateLabel()
-                            ->tel()
-                            ->rules(['max:15'])
-                            ->maxLength(15),
-                    ])
-                    ->columns(3),
-            ])
-            ->columns(1);
+                            ->relationship('contacts')
+                            ->collapsible()
+                            ->columns(3)
+                            ->schema([
+                                Forms\Components\TextInput::make('contact_type')
+                                    ->translateLabel()
+                                    ->maxLength(50)
+                                    ->default('Personal')
+                                    ->nullable(),
+                                CountryCodeSelect::make('country_code')
+                                    ->default('+51')
+                                    ->translateLabel(),
+                                Forms\Components\TextInput::make('contact_value')
+                                    ->translateLabel()
+                                    ->tel()
+                                    ->rules(['max:15'])
+                                    ->maxLength(15),
+                            ]),
+                    ]),
+
+            ]);
     }
 
     public static function table(Table $table): Table

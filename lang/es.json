@@ -243,5 +243,12 @@
     "Currency": "Moneda",
     "Characters": "Caracteristicas",
     "Measure unit": "Unidad de medida",
-    "Stock": "Cantidad"
-}
+    "Stock": "Cantidad",
+    "Maternal surname": "Apellido materno",
+    "Paternal surname": "Apellido paterno",
+    "Type user": "Tipo de usuario",
+    "Ubigeo cod": "Ubigeo",
+    "Contacts": "Contactos",
+    "Profiles": "Perfiles",
+    "Addressess": "Direcciones"
+}   

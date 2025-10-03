@@ -9,6 +9,7 @@
     import InputSelectClasic from '@/Components/Inputs/InputSelectClasic.vue';
     import ClasicButton from '@/Components/Buttons/ClasicButton.vue';
     import UserPlus from '@/Components/Icons/UserPlus.vue';
+    import EditButton from '@/Components/Buttons/EditButton.vue';
 
     const props = defineProps({
         data: {
@@ -155,6 +156,11 @@
                                     >
                                         Created At
                                     </th>
+                                    <th
+                                        class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                                    >
+                                        Actions
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
@@ -187,6 +193,21 @@
                                                 user.created_at
                                             ).toLocaleDateString()
                                         }}
+                                    </td>
+                                    <td
+                                        class="px-6 py-4 text-center text-sm text-gray-900"
+                                    >
+                                        <EditButton
+                                            @click="
+                                                () =>
+                                                    router.visit(
+                                                        route(
+                                                            'users.edit',
+                                                            user.id
+                                                        )
+                                                    )
+                                            "
+                                        />
                                     </td>
                                 </tr>
                             </tbody>
