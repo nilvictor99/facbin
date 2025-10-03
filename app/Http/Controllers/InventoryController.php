@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Inventory;
 use App\Services\Models\InventoryService;
+use App\Services\Models\ProductService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -11,9 +11,12 @@ class InventoryController extends Controller
 {
     private $inventoryService;
 
-    public function __construct(InventoryService $inventoryService)
+    private $productService;
+
+    public function __construct(InventoryService $inventoryService, ProductService $productService)
     {
         $this->inventoryService = $inventoryService;
+        $this->productService = $productService;
     }
 
     public function index()
@@ -42,30 +45,26 @@ class InventoryController extends Controller
 
     public function create()
     {
-        //
+        $data = $this->productService->getDataInventory();
+
+        return Inertia::render('Inventory/Create', [
+            'data' => $data,
+        ]);
     }
 
     public function store(Request $request)
     {
-        //
+        $this->inventoryService->storeInventory($request->all());
+
+        return redirect()->route('inventory.list')->banner('Inventario creado correctamente');
     }
 
-    public function show(Inventory $inventory)
+    public function edit(Request $request)
     {
         //
     }
 
-    public function edit(Inventory $inventory)
-    {
-        //
-    }
-
-    public function update(Request $request, Inventory $inventory)
-    {
-        //
-    }
-
-    public function destroy(Inventory $inventory)
+    public function update(Request $request)
     {
         //
     }

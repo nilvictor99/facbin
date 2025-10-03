@@ -2,10 +2,13 @@
     import AppLayout from '@/Layouts/AppLayout.vue';
     import Pagination from '@/Components/Sections/SectionPagination.vue';
     import InputListSearch from '@/Components/Inputs/InputListSearch.vue';
+    import ClasicButton from '@/Components/Buttons/ClasicButton.vue';
+
     import { ref } from 'vue';
     import { router } from '@inertiajs/vue3';
     import PerPageSelector from '@/Components/Utils/PerPageSelector.vue';
     import SectionDateRangeFilter from '@/Components/Sections/SectionDateRangeFilter.vue';
+    import CirclePlus from '@/Components/Icons/CirclePlus.vue';
 
     const props = defineProps({
         data: {
@@ -71,11 +74,20 @@
                     >
                         <InputListSearch
                             v-model="search"
-                            :cleanButton="true"
-                            placeholder="Search by user name"
+                            placeholder="Buscar..."
                             @search="handleSearch"
                             class="flex-1"
                         />
+                        <ClasicButton
+                            variant="gray"
+                            class="w-full sm:w-auto"
+                            @click="() => router.get(route('inventory.create'))"
+                        >
+                            <div class="flex flex-row items-center">
+                                <CirclePlus class="w-5 h-5 mr-2" />
+                                <span>Create Product</span>
+                            </div>
+                        </ClasicButton>
                     </div>
 
                     <div class="overflow-x-auto">

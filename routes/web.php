@@ -72,5 +72,7 @@ Route::middleware([
     Route::controller(InventoryController::class)->group(function () {
         Route::get('/inventory', 'index')->name('inventory.index');
         Route::get('/inventory/list', 'list')->name('inventory.list');
+        Route::get('/inventory/create', 'create')->name('inventory.create');
+        Route::post('/inventory/store', 'store')->name('inventory.store');
     });
 });
