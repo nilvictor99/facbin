@@ -1,5 +1,5 @@
 <script setup>
-    import { watch, computed, ref } from 'vue';
+    import { watch, computed } from 'vue';
     import { useForm } from '@inertiajs/vue3';
     import ClasicButton from '../Buttons/ClasicButton.vue';
     import InputError from '../Inputs/InputError.vue';
@@ -25,21 +25,20 @@
 
     const emit = defineEmits(['submitted', 'cancelled']);
 
-    const ubigeoDisplay = ref('');
-
     const form = useForm({
-        identification_type_id: props.data.identification_type_id || '',
-        document_number: props.data.document_number || '',
-        name: props.data.name || '',
-        paternal_surname: props.data.paternal_surname || '',
-        maternal_surname: props.data.maternal_surname || '',
-        gender: props.data.gender || '',
-        date_of_birth: props.data.date_of_birth || '',
-        ubigeo_cod: props.data.ubigeo_cod || '',
-        contact_type: props.data.contact_type || '',
-        contact_value: props.data.contact_value || '',
-        address: props.data.address || '',
-        reference: props.data.reference || '',
+        identification_type_id:
+            props.data?.profile?.identification_type_id || '',
+        document_number: props.data?.profile?.document_number || '',
+        name: props.data?.profile?.name || '',
+        paternal_surname: props.data?.profile?.paternal_surname || '',
+        maternal_surname: props.data?.profile?.maternal_surname || '',
+        gender: props.data?.profile?.gender || '',
+        date_of_birth: props.data?.profile?.date_of_birth || '',
+        ubigeo_cod: props.data?.address?.ubigeo_cod || '',
+        contact_type: props.data?.contacts?.[0]?.contact_type || '',
+        contact_value: props.data?.contacts?.[0]?.contact_value || '',
+        address: props.data?.address?.address || '',
+        reference: props.data?.address?.reference || '',
     });
 
     const submitForm = () => {
@@ -63,21 +62,18 @@
         newData => {
             if (newData) {
                 form.identification_type_id =
-                    newData.identification_type_id || '';
-                form.document_number = newData.document_number || '';
-                form.name = newData.name || '';
-                form.paternal_surname = newData.paternal_surname || '';
-                form.maternal_surname = newData.maternal_surname || '';
-                form.gender = newData.gender || '';
-                form.date_of_birth = newData.date_of_birth || '';
-                form.ubigeo_cod = newData.ubigeo_cod || '';
-                form.contact_type = newData.contact_type || '';
-                form.contact_value = newData.contact_value || '';
-                form.address = newData.address || '';
-                form.reference = newData.reference || '';
-                if (newData.ubigeo) {
-                    ubigeoDisplay.value = newData.ubigeo.name || '';
-                }
+                    newData.profile?.identification_type_id || '';
+                form.document_number = newData.profile?.document_number || '';
+                form.name = newData.profile?.name || '';
+                form.paternal_surname = newData.profile?.paternal_surname || '';
+                form.maternal_surname = newData.profile?.maternal_surname || '';
+                form.gender = newData.profile?.gender || '';
+                form.date_of_birth = newData.profile?.date_of_birth || '';
+                form.ubigeo_cod = newData.address?.ubigeo_cod || '';
+                form.contact_type = newData.contacts?.[0]?.contact_type || '';
+                form.contact_value = newData.contacts?.[0]?.contact_value || '';
+                form.address = newData.address?.address || '';
+                form.reference = newData.address?.reference || '';
             }
         },
         { deep: true }
@@ -91,8 +87,11 @@
     });
 
     const ubigeoInitialValue = computed(() => {
-        if (props.mode === 'edit' && props.data.ubigeo) {
-            return props.data.ubigeo;
+        if (props.mode === 'edit' && props.data.address?.ubigeo) {
+            return {
+                cod_ubigeo: props.data.address.ubigeo.cod_ubigeo,
+                full_ubigeo: props.data.address.ubigeo.full_ubigeo,
+            };
         }
         return {};
     });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CustomerRequest;
+use App\Http\Requests\CustomerUpdateRequest;
 use App\Models\Customer;
 use App\Services\Models\CustomerService;
 use App\Services\Models\IdentificationTypeService;
@@ -70,14 +71,21 @@ class CustomerController extends Controller
         //
     }
 
-    public function edit(Customer $customer)
+    public function edit(Request $request)
     {
-        //
+        $data = $this->customerService->getDataById($request->id);
+
+        return Inertia::render('Customer/Edit', [
+            'data' => $data,
+            'identificationTypes' => $this->IdentificationTypeService->getSimpleData(),
+        ]);
     }
 
-    public function update(Request $request, Customer $customer)
+    public function update(CustomerUpdateRequest $request)
     {
-        //
+        $this->customerService->updateData($request->id, $request->validated());
+
+        return redirect()->route('customers.index')->banner('Cliente actualizado');
     }
 
     public function destroy(Customer $customer)

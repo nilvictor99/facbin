@@ -40,6 +40,11 @@ class Customer extends Model
         return $query->with(['profile']);
     }
 
+    public function scopeWithEditRelations(Builder $query)
+    {
+        return $query->with(['profile', 'address.ubigeo', 'contacts']);
+    }
+
     public function scopeSearchCustomerData(Builder $query, $search)
     {
         return $query->where(function ($q) use ($search) {
