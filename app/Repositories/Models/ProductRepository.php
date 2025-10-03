@@ -28,4 +28,9 @@ class ProductRepository extends BaseRepository
     {
         return $this->model->withProfile()->get();
     }
+
+    public function storeData($data)
+    {
+        return $this->model->create($data);
+    }
 }

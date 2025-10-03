@@ -3,6 +3,7 @@
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\MeasureUnitController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UbigeoController;
 use App\Http\Controllers\UserController;
@@ -29,7 +30,11 @@ Route::middleware([
     })->name('dashboard');
 
     Route::controller(UbigeoController::class)->group(function () {
-        Route::get('/search', 'search')->name('ubigeos.search');
+        Route::get('/search/ubigeo', 'search')->name('ubigeos.search');
+    });
+
+    Route::controller(MeasureUnitController::class)->group(function () {
+        Route::get('/search/measureunit', 'search')->name('measure_units.search');
     });
 
     Route::controller(UserController::class)->group(function () {
@@ -49,6 +54,8 @@ Route::middleware([
     Route::controller(ProductController::class)->group(function () {
         Route::get('/product', 'index')->name('products.index');
         Route::get('/product/list', 'list')->name('products.list');
+        Route::get('/product/create', 'create')->name('products.create');
+        Route::post('/product/store', 'store')->name('products.store');
     });
 
     Route::controller(InvoiceController::class)->group(function () {

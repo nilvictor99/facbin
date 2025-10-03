@@ -6,6 +6,8 @@
     import { router } from '@inertiajs/vue3';
     import PerPageSelector from '@/Components/Utils/PerPageSelector.vue';
     import SectionDateRangeFilter from '@/Components/Sections/SectionDateRangeFilter.vue';
+    import ClasicButton from '@/Components/Buttons/ClasicButton.vue';
+    import Box from '@/Components/Icons/Box.vue';
 
     const props = defineProps({
         data: {
@@ -87,6 +89,20 @@
                             @search="handleSearch"
                             class="flex-1"
                         />
+
+                        <ClasicButton
+                            :roles="['super usuario', 'super_admin', 'Staff']"
+                            :permissions="[]"
+                            @click="
+                                () => router.visit(route('products.create'))
+                            "
+                            class="flex-1 sm:flex-none w-full sm:w-auto flex justify-center"
+                        >
+                            <div class="flex flex-row items-center">
+                                <Box class="w-5 h-5 mr-2" />
+                                <span>Create Product</span>
+                            </div>
+                        </ClasicButton>
                     </div>
 
                     <div class="overflow-x-auto">
