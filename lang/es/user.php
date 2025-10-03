@@ -8,4 +8,5 @@ return [
     'Email user' => 'Correo electrónico del usuario',
     'Security' => 'Seguridad',
     'Password' => 'Contraseña',
+    'Aditional_information' => 'Información adicional',
 ];

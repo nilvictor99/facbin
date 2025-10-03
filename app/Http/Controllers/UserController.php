@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserUpdateRequest;
 use App\Models\User;
 use App\Services\Models\IdentificationTypeService;
 use App\Services\Models\UserService;
@@ -69,14 +70,21 @@ class UserController extends Controller
         //
     }
 
-    public function edit(User $user)
+    public function edit(Request $request)
     {
-        //
+        $data = $this->userService->getEditData($request->id);
+
+        return Inertia::render('User/Edit', [
+            'data' => $data,
+            'identificationTypes' => $this->IdentificationTypeService->getSimpleData(),
+        ]);
     }
 
-    public function update(Request $request, User $user)
+    public function update(UserUpdateRequest $request)
     {
-        //
+        $this->userService->UpdateUser($request->id, $request->validated());
+
+        return redirect()->route('users.list')->banner('Usuario actualizado');
     }
 
     public function destroy(User $user)

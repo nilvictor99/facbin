@@ -73,7 +73,7 @@
                 }
             }
         },
-        { deep: true }
+        { immediate: true, deep: true }
     );
 
     const IdentificationTypesoptions = computed(() => {
@@ -178,7 +178,15 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+        <div
+            class="grid grid-cols-1"
+            :class="{
+                'md:grid-cols-3': mode === 'edit',
+                'md:grid-cols-4': mode === 'create',
+                'gap-4': true,
+                'mb-4': true,
+            }"
+        >
             <div>
                 <InputDateClasic
                     v-model="form.date_of_birth"

@@ -52,4 +52,33 @@ class UserRepository extends BaseRepository
 
         return $user;
     }
+
+    public function getEditData($id)
+    {
+        return $this->model->withUserProfile()->findOrFail($id);
+    }
+
+    public function UpdateUser($id, $data)
+    {
+        $user = $this->model->findOrFail($id);
+        $userData = [
+            'name' => $data['name'],
+            'email' => $data['email'],
+        ];
+        $user->update($userData);
+
+        $profileData = [
+            'identification_type_id' => $data['identification_type_id'] ?? null,
+            'document_number' => $data['document_number'] ?? null,
+            'name' => $data['name'] ?? null,
+            'paternal_surname' => $data['paternal_surname'] ?? null,
+            'maternal_surname' => $data['maternal_surname'] ?? null,
+            'gender' => $data['gender'] ?? null,
+            'date_of_birth' => $data['date_of_birth'] ?? null,
+            'full_name' => $data['name'].' '.($data['paternal_surname'] ?? '').' '.($data['maternal_surname'] ?? ''),
+        ];
+        $user->profile()->update($profileData);
+
+        return $user;
+    }
 }
