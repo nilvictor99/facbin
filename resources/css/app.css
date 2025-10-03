@@ -5,3 +5,18 @@
 [x-cloak] {
     display: none;
 }
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 8px;
+}
+::-webkit-scrollbar-corner {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background-color: #bcbcbb;
+    border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
