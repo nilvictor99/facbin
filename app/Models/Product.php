@@ -79,4 +79,9 @@ class Product extends Model
 
         return $query;
     }
+
+    public function scopeGetDataInventory(Builder $query)
+    {
+        return $query->select('id', 'name', 'stock');
+    }
 }

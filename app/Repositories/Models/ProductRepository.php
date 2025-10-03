@@ -24,6 +24,11 @@ class ProductRepository extends BaseRepository
         return $query->latest()->paginate($perPage);
     }
 
+    public function getDataInventory()
+    {
+        return $this->model->getDataInventory()->get();
+    }
+
     public function getCustomers()
     {
         return $this->model->withProfile()->get();
