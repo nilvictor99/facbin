@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductUpdateRequest;
 use App\Models\Product;
 use App\Services\Models\CurrencyService;
 use App\Services\Models\ProductService;
@@ -63,14 +64,21 @@ class ProductController extends Controller
         //
     }
 
-    public function edit(Product $product)
+    public function edit(Request $request)
     {
-        //
+        $data = $this->productService->getDataById($request->id);
+
+        return Inertia::render('Product/Edit', [
+            'data' => $data,
+            'currencies' => $this->currencyService->getAll(),
+        ]);
     }
 
-    public function update(Request $request, Product $product)
+    public function update(ProductUpdateRequest $request)
     {
-        //
+        $this->productService->updateData($request->id, $request->validated());
+
+        return redirect()->route('products.list')->banner('Producto actualizado');
     }
 
     public function destroy(Product $product)
