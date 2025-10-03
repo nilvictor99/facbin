@@ -51,6 +51,8 @@ Route::middleware([
         Route::get('/customer/list', 'list')->name('customers.list');
         Route::get('/customer/create', 'create')->name('customers.create');
         Route::post('/customer/store', 'store')->name('customers.store');
+        Route::get('/customer/{id}/edit', 'edit')->name('customers.edit');
+        Route::put('/customer/{id}/update', 'update')->name('customers.update');
     });
 
     Route::controller(ProductController::class)->group(function () {
