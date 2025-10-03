@@ -60,6 +60,8 @@ Route::middleware([
         Route::get('/product/list', 'list')->name('products.list');
         Route::get('/product/create', 'create')->name('products.create');
         Route::post('/product/store', 'store')->name('products.store');
+        Route::get('/product/{id}/edit', 'edit')->name('products.edit');
+        Route::put('/product/{id}/update', 'update')->name('products.update');
     });
 
     Route::controller(InvoiceController::class)->group(function () {

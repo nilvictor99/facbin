@@ -33,4 +33,17 @@ class ProductRepository extends BaseRepository
     {
         return $this->model->create($data);
     }
+
+    public function getDataById($id)
+    {
+        return $this->model->withEditRelations()->findOrFail($id);
+    }
+
+    public function updateData($id, $data)
+    {
+        $record = $this->model->findOrFail($id);
+        $record->update($data);
+
+        return $record;
+    }
 }

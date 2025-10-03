@@ -40,6 +40,11 @@ class Product extends Model
         return $query->with(['currency']);
     }
 
+    public function scopeWithEditRelations(Builder $query)
+    {
+        return $query->with(['currency', 'measureUnit']);
+    }
+
     public function scopeSearchProductData(Builder $query, $search)
     {
         return $query->where(function ($q) use ($search) {
