@@ -2,11 +2,11 @@
     import { ref } from 'vue';
     import { Head, Link, router } from '@inertiajs/vue3';
     import ApplicationMark from '@/Components/Utils/ApplicationMark.vue';
-    import Banner from '@/Components/Utils/Banner.vue';
     import Dropdown from '@/Components/Utils/Dropdown.vue';
     import DropdownLink from '@/Components/Utils/DropdownLink.vue';
     import NavLink from '@/Components/Utils/NavLink.vue';
     import ResponsiveNavLink from '@/Components/Utils/ResponsiveNavLink.vue';
+    import BannerLoading from '@/Components/Utils/BannerLoading.vue';
 
     defineProps({
         title: String,
@@ -41,7 +41,7 @@
             />
         </Head>
 
-        <Banner />
+        <BannerLoading />
 
         <div class="min-h-screen bg-gray-100 flex flex-col">
             <nav class="bg-white border-b border-gray-100 flex-none">
