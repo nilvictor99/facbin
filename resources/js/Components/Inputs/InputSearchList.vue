@@ -168,6 +168,22 @@
         ];
     });
 
+    const isExactMatch = computed(() => {
+        if (!searchTerm.value || filteredResults.value.length === 0)
+            return false;
+
+        return filteredResults.value.some(item => {
+            const mainValue = getNestedValue(
+                item,
+                props.displayConfig.mainField
+            );
+            return (
+                mainValue &&
+                mainValue.toLowerCase() === searchTerm.value.toLowerCase()
+            );
+        });
+    });
+
     watch(
         () => props.forceValue,
         newValue => {
@@ -290,7 +306,11 @@
         </div>
 
         <ul
-            v-if="filteredResults.length > 0 && searchTerm.length > 0"
+            v-if="
+                filteredResults.length > 0 &&
+                searchTerm.length > 0 &&
+                !isExactMatch
+            "
             class="absolute z-10 w-full mt-0 overflow-hidden bg-white border border-gray-200 rounded-md shadow-sm max-h-60 overflow-y-auto"
         >
             <li
