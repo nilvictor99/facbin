@@ -64,6 +64,18 @@
             replace: true,
         });
     }
+
+    const getFullName = user => {
+        if (user.profile && user.profile.full_name) {
+            return user.profile.full_name;
+        }
+        return user.name;
+    };
+
+    const getGenderText = gender => {
+        if (!gender) return '';
+        return gender === 'M' ? 'Masculino' : 'Femenino';
+    };
 </script>
 
 <template>
@@ -139,12 +151,17 @@
                                     <th
                                         class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
                                     >
-                                        Name
+                                        Usuario
                                     </th>
                                     <th
                                         class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
                                     >
-                                        Email
+                                        Información
+                                    </th>
+                                    <th
+                                        class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                                    >
+                                        Tipo
                                     </th>
                                     <th
                                         class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider"
@@ -154,12 +171,7 @@
                                     <th
                                         class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider"
                                     >
-                                        Created At
-                                    </th>
-                                    <th
-                                        class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider"
-                                    >
-                                        Actions
+                                        Acciones
                                     </th>
                                 </tr>
                             </thead>
@@ -169,34 +181,120 @@
                                     :key="user.id"
                                     class="hover:bg-gray-50 transition-colors"
                                 >
-                                    <td
-                                        class="px-6 py-4 text-sm font-medium text-gray-900"
-                                    >
-                                        {{ user.name }}
+                                    <!-- Columna de Usuario con foto -->
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center">
+                                            <div
+                                                class="flex-shrink-0 h-12 w-12"
+                                            >
+                                                <img
+                                                    :src="
+                                                        user.profile_photo_url
+                                                    "
+                                                    :alt="user.name"
+                                                    class="h-12 w-12 rounded-full object-cover border-2 border-gray-200"
+                                                />
+                                            </div>
+                                            <div class="ml-4">
+                                                <div
+                                                    class="text-sm font-medium text-gray-900"
+                                                >
+                                                    {{ getFullName(user) }}
+                                                </div>
+                                                <div
+                                                    class="text-sm text-gray-500"
+                                                >
+                                                    {{ user.email }}
+                                                </div>
+                                            </div>
+                                        </div>
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-gray-900">
-                                        {{ user.email }}
+
+                                    <!-- Columna de Información adicional -->
+                                    <td class="px-6 py-4">
+                                        <div class="text-sm text-gray-900">
+                                            <div v-if="user.profile">
+                                                <div
+                                                    class="flex items-center space-x-2"
+                                                >
+                                                    <span class="text-gray-600"
+                                                        >Género:</span
+                                                    >
+                                                    <span>{{
+                                                        getGenderText(
+                                                            user.profile.gender
+                                                        )
+                                                    }}</span>
+                                                </div>
+                                                <div
+                                                    v-if="
+                                                        user.profile
+                                                            .date_of_birth
+                                                    "
+                                                    class="flex items-center space-x-2 mt-1"
+                                                >
+                                                    <span class="text-gray-600"
+                                                        >Nacimiento:</span
+                                                    >
+                                                    <span>{{
+                                                        new Date(
+                                                            user.profile.date_of_birth
+                                                        ).toLocaleDateString()
+                                                    }}</span>
+                                                </div>
+                                            </div>
+                                            <div
+                                                v-else
+                                                class="text-gray-500 italic"
+                                            >
+                                                Sin perfil completado
+                                            </div>
+                                        </div>
                                     </td>
+
+                                    <!-- Columna de Tipo de Usuario -->
                                     <td class="px-6 py-4 text-center">
                                         <span
-                                            v-if="user.roles"
-                                            class="bg-blue-100 text-blue-800 inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
+                                            class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
+                                            :class="{
+                                                'bg-blue-100 text-blue-800':
+                                                    user.type_user === 'Simple',
+                                                'bg-green-100 text-green-800':
+                                                    user.type_user === 'Staff',
+                                                'bg-purple-100 text-purple-800':
+                                                    user.type_user === 'Admin',
+                                            }"
                                         >
-                                            {{ user.roles.join(', ') }}
+                                            {{ user.type_user }}
                                         </span>
                                     </td>
-                                    <td
-                                        class="px-6 py-4 text-center text-sm text-gray-900"
-                                    >
-                                        {{
-                                            new Date(
-                                                user.created_at
-                                            ).toLocaleDateString()
-                                        }}
+
+                                    <!-- Columna de Roles -->
+                                    <td class="px-6 py-4 text-center">
+                                        <div
+                                            v-if="
+                                                user.roles &&
+                                                user.roles.length > 0
+                                            "
+                                        >
+                                            <span
+                                                v-for="role in user.roles"
+                                                :key="role"
+                                                class="inline-flex items-center px-2 py-1 mx-1 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-800"
+                                            >
+                                                {{ role }}
+                                            </span>
+                                        </div>
+                                        <span
+                                            v-else
+                                            class="text-gray-500 text-sm"
+                                        >
+                                            Sin roles
+                                        </span>
                                     </td>
-                                    <td
-                                        class="px-6 py-4 text-center text-sm text-gray-900"
-                                    >
+
+                                    <!-- Columna de Acciones -->
+                                    <td class="px-6 py-4 text-center">
                                         <EditButton
                                             @click="
                                                 () =>
