@@ -29,6 +29,11 @@ class Inventory extends Model
         return $query->with(['user', 'inventoryDetails']);
     }
 
+    public function scopeWithEditRelations($query)
+    {
+        return $query->with(['user', 'inventoryDetails.product']);
+    }
+
     public function scopeSearchInventoryData(Builder $query, $search)
     {
         return $query->where(function ($q) use ($search) {

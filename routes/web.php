@@ -74,5 +74,7 @@ Route::middleware([
         Route::get('/inventory/list', 'list')->name('inventory.list');
         Route::get('/inventory/create', 'create')->name('inventory.create');
         Route::post('/inventory/store', 'store')->name('inventory.store');
+        Route::get('/inventory/{id}/edit', 'edit')->name('inventory.edit');
+        Route::put('/inventory/{id}/update', 'update')->name('inventory.update');
     });
 });
