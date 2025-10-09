@@ -154,7 +154,7 @@ class BranchResource extends Resource
                         return $record->contacts()
                             ->latest()
                             ->first()
-                            ?->phone_number ?? 'No disponible';
+                            ?->contact_value ?? 'No disponible';
                     })
                     ->badge()
                     ->copyable()
