@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             IdentificationTypeSeeder::class,
             OwnerSeeder::class,
             RoleSeeder::class,
+            FakerSeeder::class,
         ]);
     }
 }
