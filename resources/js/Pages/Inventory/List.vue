@@ -3,12 +3,12 @@
     import Pagination from '@/Components/Sections/SectionPagination.vue';
     import InputListSearch from '@/Components/Inputs/InputListSearch.vue';
     import ClasicButton from '@/Components/Buttons/ClasicButton.vue';
-
     import { ref } from 'vue';
     import { router } from '@inertiajs/vue3';
     import PerPageSelector from '@/Components/Utils/PerPageSelector.vue';
     import SectionDateRangeFilter from '@/Components/Sections/SectionDateRangeFilter.vue';
     import CirclePlus from '@/Components/Icons/CirclePlus.vue';
+    import EditButton from '@/Components/Buttons/EditButton.vue';
 
     const props = defineProps({
         data: {
@@ -111,6 +111,11 @@
                                     >
                                         Created At
                                     </th>
+                                    <th
+                                        class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                                    >
+                                        Acciones
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
@@ -135,6 +140,21 @@
                                                 inventory.created_at
                                             ).toLocaleDateString()
                                         }}
+                                    </td>
+                                    <td
+                                        class="px-6 py-4 text-center text-sm text-gray-900"
+                                    >
+                                        <EditButton
+                                            @click="
+                                                () =>
+                                                    router.visit(
+                                                        route(
+                                                            'inventory.edit',
+                                                            inventory.id
+                                                        )
+                                                    )
+                                            "
+                                        />
                                     </td>
                                 </tr>
                             </tbody>

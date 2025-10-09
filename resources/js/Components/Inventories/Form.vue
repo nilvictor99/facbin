@@ -1,9 +1,11 @@
 <script setup>
-    import { watch } from 'vue';
+    import { watch, computed } from 'vue';
     import { useForm } from '@inertiajs/vue3';
     import ClasicButton from '../Buttons/ClasicButton.vue';
     import LabelInput from '../Inputs/LabelInput.vue';
     import InputFocus from '../Inputs/InputFocus.vue';
+    import InputCheckbox from '../Inputs/InputCheckbox.vue';
+    import CustomTooltip from '../Utils/CustomTooltip.vue';
 
     const props = defineProps({
         mode: {
@@ -12,7 +14,7 @@
         },
         data: {
             type: Array,
-            required: true,
+            default: () => [],
         },
         inventoryData: {
             type: Object,
@@ -27,35 +29,55 @@
     });
 
     const initializeForm = () => {
-        form.inventoryDetails = (
-            (props.mode === 'edit' && props.inventoryData?.inventoryDetails) ||
-            props.data
-        ).map(item => ({
+        const details =
+            props.inventoryData?.inventory_details || props.data || [];
+        form.inventoryDetails = details.map(item => ({
             product_id: item.product_id || item.id,
             product_name: item.product?.name || item.name,
-            starting_amount: item.starting_amount || item.stock,
-            ending_amount: item.ending_amount || item.stock,
-            difference: item.difference || 0,
+            starting_amount: parseFloat(item.starting_amount || item.stock),
+            ending_amount: parseFloat(item.ending_amount || item.stock),
+            difference: parseFloat(item.difference) || 0,
             observation: item.observation || '',
+            selected: props.mode === 'edit' ? true : false,
         }));
     };
 
     initializeForm();
 
     const calculateDifference = detail => {
-        detail.difference = detail.starting_amount - detail.ending_amount;
+        detail.difference = detail.ending_amount - detail.starting_amount;
     };
 
+    const selectAll = () => {
+        form.inventoryDetails.forEach(detail => {
+            detail.selected = true;
+        });
+    };
+
+    const deselectAll = () => {
+        form.inventoryDetails.forEach(detail => {
+            detail.selected = false;
+        });
+    };
+
+    const allSelected = computed(() => {
+        return form.inventoryDetails.every(detail => detail.selected);
+    });
+
     const submitForm = () => {
-        if (props.mode === 'edit') {
-            form.put(route('inventory.update', props.inventoryData.id), {
+        const isEdit = props.mode === 'edit';
+        form[isEdit ? 'put' : 'post'](
+            route(
+                isEdit ? 'inventory.update' : 'inventory.store',
+                isEdit ? props.inventoryData.id : undefined
+            ),
+            {
+                inventoryDetails: form.inventoryDetails,
+            },
+            {
                 onSuccess: () => emit('submitted'),
-            });
-        } else {
-            form.post(route('inventory.store'), {
-                onSuccess: () => emit('submitted'),
-            });
-        }
+            }
+        );
     };
 
     const cancel = () => {
@@ -77,6 +99,22 @@
             class="fixed top-16 left-0 right-0 z-50 bg-transparent py-4 px-6"
         >
             <div class="max-w-7xl mx-auto flex justify-end space-x-4">
+                <ClasicButton
+                    v-if="!allSelected"
+                    type="button"
+                    variant="gray"
+                    @click="selectAll"
+                >
+                    Seleccionar Todo
+                </ClasicButton>
+                <ClasicButton
+                    v-if="allSelected"
+                    type="button"
+                    variant="gray"
+                    @click="deselectAll"
+                >
+                    Desmarcar Todo
+                </ClasicButton>
                 <ClasicButton type="button" variant="gray" @click="cancel">
                     Cancelar
                 </ClasicButton>
@@ -90,7 +128,9 @@
                     {{
                         form.processing
                             ? 'Guardando...'
-                            : 'Registrar Inventario'
+                            : mode === 'edit'
+                              ? 'Actualizar Inventario'
+                              : 'Registrar Inventario'
                     }}
                 </ClasicButton>
             </div>
@@ -101,12 +141,25 @@
                 :key="detail.product_id"
                 class="bg-white p-4 rounded-lg shadow-md"
             >
-                <h3 class="text-lg font-semibold mb-3">
-                    {{ detail.product_name }}
-                </h3>
-
+                <div class="flex items-center justify-between">
+                    <InputCheckbox
+                        v-model:checked="detail.selected"
+                        theme="gray"
+                        size="sm"
+                    />
+                    <CustomTooltip :content="detail.product_name">
+                        <h3 class="text-lg font-semibold">
+                            {{
+                                detail.product_name.length > 20
+                                    ? detail.product_name.substring(0, 20) +
+                                      '...'
+                                    : detail.product_name
+                            }}
+                        </h3>
+                    </CustomTooltip>
+                </div>
                 <div
-                    class="space-y-4 mb-4 flex flex-col sm:flex-row sm:space-x-4 sm:space-y-0"
+                    class="mt-4 space-y-4 mb-4 flex flex-col sm:flex-row sm:space-x-4 sm:space-y-0"
                 >
                     <div>
                         <LabelInput

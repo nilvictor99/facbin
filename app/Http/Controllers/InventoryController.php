@@ -61,11 +61,19 @@ class InventoryController extends Controller
 
     public function edit(Request $request)
     {
-        //
+        $data = $this->inventoryService->getDataById($request->id);
+        $products = $this->productService->getDataInventory();
+
+        return Inertia::render('Inventory/Edit', [
+            'data' => $data,
+            'products' => $products,
+        ]);
     }
 
     public function update(Request $request)
     {
-        //
+        $this->inventoryService->updateInventory($request->id, $request->all());
+
+        return redirect()->route('inventory.list')->banner('Inventario actualizado correctamente');
     }
 }

@@ -71,4 +71,35 @@ class InventoryRepository extends BaseRepository
             return MovementTypeEnum::STABLE->value;
         }
     }
+
+    public function getDataById($id)
+    {
+        return $this->model->withEditRelations()->findOrFail($id);
+    }
+
+    public function updateInventory($id, array $data)
+    {
+        $inventory = $this->model->findOrFail($id);
+
+        if (isset($data['inventoryDetails']) && is_array($data['inventoryDetails'])) {
+            $inventory->inventoryDetails()->delete();
+            foreach ($data['inventoryDetails'] as $detail) {
+                $movementType = $this->calculateMovementType(
+                    $detail['starting_amount'],
+                    $detail['ending_amount']
+                );
+                $inventory->inventoryDetails()->create([
+                    'product_id' => $detail['product_id'],
+                    'starting_amount' => $detail['starting_amount'],
+                    'ending_amount' => $detail['ending_amount'],
+                    'difference' => $detail['difference'],
+                    'movement_type' => $movementType,
+                    'observation' => $detail['observation'],
+                    'product_stock' => $detail['ending_amount'],
+                ]);
+            }
+        }
+
+        return $inventory;
+    }
 }
