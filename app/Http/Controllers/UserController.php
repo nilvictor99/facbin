@@ -87,8 +87,10 @@ class UserController extends Controller
         return redirect()->route('users.list')->banner('Usuario actualizado');
     }
 
-    public function destroy(User $user)
+    public function destroy(Request $request)
     {
-        //
+        $this->userService->DeleteData($request->id);
+
+        return redirect()->route('users.list')->banner('Usuario eliminado');
     }
 }
