@@ -9,6 +9,7 @@
     import ClasicButton from '@/Components/Buttons/ClasicButton.vue';
     import Box from '@/Components/Icons/Box.vue';
     import EditButton from '@/Components/Buttons/EditButton.vue';
+    import CustomTooltip from '@/Components/Utils/CustomTooltip.vue';
 
     const props = defineProps({
         data: {
@@ -113,29 +114,76 @@
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th
-                                        class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                                        class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider cursor-pointer"
+                                        @click="toggleSort('name')"
                                     >
                                         Name
+                                        <span v-if="sortBy === 'name'">
+                                            {{
+                                                sortDirection === 'asc'
+                                                    ? '↑'
+                                                    : '↓'
+                                            }}
+                                        </span>
                                     </th>
                                     <th
-                                        class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                                        class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider cursor-pointer"
+                                        @click="toggleSort('description')"
                                     >
                                         Description
+                                        <span v-if="sortBy === 'description'">
+                                            {{
+                                                sortDirection === 'asc'
+                                                    ? '↑'
+                                                    : '↓'
+                                            }}
+                                        </span>
                                     </th>
                                     <th
-                                        class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                                        class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider cursor-pointer"
+                                        @click="toggleSort('stock')"
                                     >
                                         Stock
+                                        <span v-if="sortBy === 'stock'">
+                                            {{
+                                                sortDirection === 'asc'
+                                                    ? '↑'
+                                                    : '↓'
+                                            }}
+                                        </span>
+                                    </th>
+                                    <th
+                                        class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider cursor-pointer"
+                                        @click="toggleSort('sale_price')"
+                                    >
+                                        Sale Price
+                                        <span v-if="sortBy === 'sale_price'">
+                                            {{
+                                                sortDirection === 'asc'
+                                                    ? '↑'
+                                                    : '↓'
+                                            }}
+                                        </span>
+                                    </th>
+                                    <th
+                                        class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider cursor-pointer"
+                                        @click="toggleSort('purchase_price')"
+                                    >
+                                        Purchase Price
+                                        <span
+                                            v-if="sortBy === 'purchase_price'"
+                                        >
+                                            {{
+                                                sortDirection === 'asc'
+                                                    ? '↑'
+                                                    : '↓'
+                                            }}
+                                        </span>
                                     </th>
                                     <th
                                         class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider"
                                     >
-                                        Price
-                                    </th>
-                                    <th
-                                        class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider"
-                                    >
-                                        Created At
+                                        Active
                                     </th>
                                     <th
                                         class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider"
@@ -156,7 +204,21 @@
                                         {{ product.name }}
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-900">
-                                        {{ product.description }}
+                                        <CustomTooltip
+                                            :content="product.description"
+                                        >
+                                            <span>
+                                                {{
+                                                    product.description.length >
+                                                    50
+                                                        ? product.description.substring(
+                                                              0,
+                                                              50
+                                                          ) + '...'
+                                                        : product.description
+                                                }}
+                                            </span>
+                                        </CustomTooltip>
                                     </td>
                                     <td
                                         class="px-6 py-4 text-center text-sm text-gray-900"
@@ -172,13 +234,24 @@
                                     <td
                                         class="px-6 py-4 text-center text-sm text-gray-900"
                                     >
-                                        {{
-                                            new Date(
-                                                product.created_at
-                                            ).toLocaleDateString()
-                                        }}
+                                        {{ product.currency.symbol }}
+                                        {{ product.purchase_price }}
                                     </td>
-
+                                    <td class="px-6 py-4 text-center text-sm">
+                                        <span
+                                            :class="
+                                                product.active
+                                                    ? 'text-green-600 font-semibold'
+                                                    : 'text-red-600 font-semibold'
+                                            "
+                                        >
+                                            {{
+                                                product.active
+                                                    ? 'Active'
+                                                    : 'Inactive'
+                                            }}
+                                        </span>
+                                    </td>
                                     <td
                                         class="px-6 py-4 text-center text-sm text-gray-900"
                                     >
