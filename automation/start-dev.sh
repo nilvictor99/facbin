@@ -4,7 +4,7 @@
 docker compose up -d
 
 # Wait for containers to be ready
-sleep 10
+sleep 3
 
 # Get the container ID for the Laravel app (inventory-laravel.test-1)
 CONTAINER_ID=$(basename $(pwd) | tr '[:upper:]' '[:lower:]' | xargs -I {} docker ps --filter "name={}-laravel.test-1" --format "{{.ID}}")

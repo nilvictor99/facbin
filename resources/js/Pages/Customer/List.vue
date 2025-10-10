@@ -144,11 +144,6 @@
                                     <th
                                         class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
                                     >
-                                        Code
-                                    </th>
-                                    <th
-                                        class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
-                                    >
                                         Full Name
                                     </th>
                                     <th
@@ -156,10 +151,11 @@
                                     >
                                         Document
                                     </th>
+
                                     <th
                                         class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider"
                                     >
-                                        Created At
+                                        Active
                                     </th>
                                     <th
                                         class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider"
@@ -174,11 +170,6 @@
                                     :key="customer.id"
                                     class="hover:bg-gray-50 transition-colors"
                                 >
-                                    <td
-                                        class="px-6 py-4 text-sm font-medium text-gray-900"
-                                    >
-                                        {{ customer.code }}
-                                    </td>
                                     <td class="px-6 py-4 text-sm text-gray-900">
                                         {{ customer.profile.full_name }}
                                     </td>
@@ -187,16 +178,22 @@
                                     >
                                         {{ customer.profile.document_number }}
                                     </td>
-                                    <td
-                                        class="px-6 py-4 text-center text-sm text-gray-900"
-                                    >
-                                        {{
-                                            new Date(
-                                                customer.created_at
-                                            ).toLocaleDateString()
-                                        }}
+                                    <td class="px-6 py-4 text-center text-sm">
+                                        <span
+                                            :class="[
+                                                'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
+                                                customer.profile.active
+                                                    ? 'bg-green-100 text-green-800'
+                                                    : 'bg-red-100 text-red-800',
+                                            ]"
+                                        >
+                                            {{
+                                                customer.profile.active
+                                                    ? 'Active'
+                                                    : 'Inactive'
+                                            }}
+                                        </span>
                                     </td>
-
                                     <td
                                         class="px-6 py-4 text-center text-sm text-gray-900"
                                     >
