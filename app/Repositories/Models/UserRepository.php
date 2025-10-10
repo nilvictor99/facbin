@@ -81,4 +81,12 @@ class UserRepository extends BaseRepository
 
         return $user;
     }
+
+    public function DeleteData($id)
+    {
+        $user = $this->model->findOrFail($id);
+        $user->delete();
+
+        return true;
+    }
 }

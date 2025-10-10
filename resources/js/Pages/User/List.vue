@@ -10,6 +10,8 @@
     import ClasicButton from '@/Components/Buttons/ClasicButton.vue';
     import UserPlus from '@/Components/Icons/UserPlus.vue';
     import EditButton from '@/Components/Buttons/EditButton.vue';
+    import ButtonDelete from '@/Components/Buttons/ButtonDelete.vue';
+    import ModalDelete from '@/Components/Modals/ModalDelete.vue';
 
     const props = defineProps({
         data: {
@@ -42,6 +44,9 @@
     const perPage = ref(props.perPage);
     const userId = ref(props.userId);
     const dateRange = ref(props.dateRange);
+    const showDeleteModal = ref(false);
+    const userToDelete = ref(null);
+    const isDeleting = ref(false);
 
     function handleSearch() {
         const params = {
@@ -75,6 +80,26 @@
     const getGenderText = gender => {
         if (!gender) return '';
         return gender === 'M' ? 'Masculino' : 'Femenino';
+    };
+
+    const handleDelete = user => {
+        userToDelete.value = user.id;
+        showDeleteModal.value = true;
+    };
+
+    const confirmDelete = () => {
+        if (!userToDelete.value) return;
+
+        isDeleting.value = true;
+        router.delete(route('users.destroy', userToDelete.value), {
+            preserveScroll: true,
+            onFinish: () => {
+                isDeleting.value = false;
+                showDeleteModal.value = false;
+                userToDelete.value = null;
+            },
+            onError: console.error,
+        });
     };
 </script>
 
@@ -295,17 +320,35 @@
 
                                     <!-- Columna de Acciones -->
                                     <td class="px-6 py-4 text-center">
-                                        <EditButton
-                                            @click="
-                                                () =>
-                                                    router.visit(
-                                                        route(
-                                                            'users.edit',
-                                                            user.id
+                                        <div
+                                            class="flex justify-center space-x-2"
+                                        >
+                                            <EditButton
+                                                :roles="[
+                                                    'super usuario',
+                                                    'super_admin',
+                                                    'Staff',
+                                                ]"
+                                                :permissions="[]"
+                                                @click="
+                                                    () =>
+                                                        router.visit(
+                                                            route(
+                                                                'users.edit',
+                                                                user.id
+                                                            )
                                                         )
-                                                    )
-                                            "
-                                        />
+                                                "
+                                            />
+                                            <ButtonDelete
+                                                :roles="['super usuario']"
+                                                :permissions="[
+                                                    'delete_password::vault',
+                                                ]"
+                                                @click="handleDelete(user)"
+                                                :disabled="isDeleting"
+                                            />
+                                        </div>
                                     </td>
                                 </tr>
                             </tbody>
@@ -326,5 +369,15 @@
                 </div>
             </div>
         </section>
+        <ModalDelete
+            :show="showDeleteModal"
+            title="Eliminar Usuario"
+            description="¿Está seguro que desea eliminar este usuario? Esta acción no se puede deshacer."
+            itemType="Usuario"
+            :itemId="userToDelete"
+            @close="showDeleteModal = false"
+            @confirm="confirmDelete"
+            :loading="isDeleting"
+        />
     </AppLayout>
 </template>
