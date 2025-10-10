@@ -102,19 +102,19 @@
                                         User
                                     </th>
                                     <th
-                                        class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                                        class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider"
                                     >
                                         Details Count
                                     </th>
                                     <th
                                         class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider"
                                     >
-                                        Created At
+                                        Total Difference
                                     </th>
                                     <th
                                         class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider"
                                     >
-                                        Acciones
+                                        Actions
                                     </th>
                                 </tr>
                             </thead>
@@ -124,21 +124,29 @@
                                     :key="inventory.id"
                                     class="hover:bg-gray-50 transition-colors"
                                 >
-                                    <td
-                                        class="px-6 py-4 text-sm font-medium text-gray-900"
-                                    >
-                                        {{ inventory.user.name }}
-                                    </td>
                                     <td class="px-6 py-4 text-sm text-gray-900">
-                                        {{ inventory.inventory_details.length }}
+                                        {{ inventory.user.name }}
                                     </td>
                                     <td
                                         class="px-6 py-4 text-center text-sm text-gray-900"
                                     >
+                                        {{ inventory.inventory_details.length }}
+                                    </td>
+
+                                    <td
+                                        class="px-6 py-4 text-center text-sm text-gray-900"
+                                    >
                                         {{
-                                            new Date(
-                                                inventory.created_at
-                                            ).toLocaleDateString()
+                                            inventory.inventory_details
+                                                .reduce(
+                                                    (sum, detail) =>
+                                                        sum +
+                                                        parseFloat(
+                                                            detail.difference
+                                                        ),
+                                                    0
+                                                )
+                                                .toFixed(2)
                                         }}
                                     </td>
                                     <td
