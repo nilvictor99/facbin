@@ -101,4 +101,15 @@ class CustomerRepository extends BaseRepository
 
         return $customer;
     }
+
+    public function deleteData($id)
+    {
+        $customer = $this->model->findOrFail($id);
+        $customer->profile()->delete();
+        $customer->address()->delete();
+        $customer->contacts()->delete();
+        $customer->delete();
+
+        return true;
+    }
 }

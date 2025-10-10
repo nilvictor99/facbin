@@ -88,8 +88,10 @@ class CustomerController extends Controller
         return redirect()->route('customers.index')->banner('Cliente actualizado');
     }
 
-    public function destroy(Customer $customer)
+    public function destroy(Request $request)
     {
-        //
+        $this->customerService->deleteData($request->id);
+
+        return redirect()->route('customers.index')->banner('Cliente eliminado');
     }
 }
