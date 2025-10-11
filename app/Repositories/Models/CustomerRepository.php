@@ -108,6 +108,7 @@ class CustomerRepository extends BaseRepository
         $customer->profile()->delete();
         $customer->address()->delete();
         $customer->contacts()->delete();
+        $customer->invoices()->delete();
         $customer->delete();
 
         return true;

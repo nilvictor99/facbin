@@ -56,9 +56,9 @@ class Invoice extends Model
         return $this->hasMany(InvoiceDetail::class);
     }
 
-    public function scopeWithRelations($query)
+    public function scopeWithRelations(Builder $query)
     {
-        return $query->with(['customer.profile']);
+        return $query->with(['customer.profile', 'company', 'details']);
     }
 
     public function scopeSearchInvoiceData(Builder $query, $search)

@@ -125,7 +125,7 @@
                                     class="hover:bg-gray-50 transition-colors"
                                 >
                                     <td class="px-6 py-4 text-sm text-gray-900">
-                                        {{ inventory.user.name }}
+                                        {{ inventory.user?.name || 'Unknown' }}
                                     </td>
                                     <td
                                         class="px-6 py-4 text-center text-sm text-gray-900"

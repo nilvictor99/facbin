@@ -22,8 +22,8 @@ return new class extends Migration
             $table->decimal('igv')->nullable();
             $table->decimal('total', 10, 2);
             $table->string('estado')->default('pendiente');
-            $table->foreignId('customer_id')->nullable()->constrained();
-            $table->foreignId('company_id')->nullable()->constrained();
+            $table->foreignId('customer_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('company_id')->nullable()->constrained()->onDelete('set null');
             $table->string('xml_path')->nullable();
             $table->string('cdr_path')->nullable();
             $table->string('ticket')->nullable();

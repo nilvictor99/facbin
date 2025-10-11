@@ -117,7 +117,9 @@
                         :options="
                             customers.map(customer => ({
                                 id: customer.id,
-                                text: customer.profile.full_name,
+                                text: customer.profile
+                                    ? customer.profile.full_name
+                                    : 'N/A',
                             }))
                         "
                         :initialValue="{
@@ -197,24 +199,33 @@
                                 >
                                     <td class="px-6 py-4 text-sm text-gray-900">
                                         {{
-                                            customer.profile.full_name || 'N/A'
+                                            customer.profile
+                                                ? customer.profile.full_name
+                                                : 'N/A'
                                         }}
                                     </td>
                                     <td
                                         class="px-6 py-4 text-center text-sm text-gray-900"
                                     >
-                                        {{ customer.profile.document_number }}
+                                        {{
+                                            customer.profile
+                                                ? customer.profile
+                                                      .document_number
+                                                : 'N/A'
+                                        }}
                                     </td>
                                     <td class="px-6 py-4 text-center text-sm">
                                         <span
                                             :class="[
                                                 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
+                                                customer.profile &&
                                                 customer.profile.active
                                                     ? 'bg-green-100 text-green-800'
                                                     : 'bg-red-100 text-red-800',
                                             ]"
                                         >
                                             {{
+                                                customer.profile &&
                                                 customer.profile.active
                                                     ? 'Active'
                                                     : 'Inactive'
