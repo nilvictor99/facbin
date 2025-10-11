@@ -54,6 +54,7 @@ Route::middleware([
         Route::post('/customer/store', 'store')->name('customers.store');
         Route::get('/customer/{id}/edit', 'edit')->name('customers.edit');
         Route::put('/customer/{id}/update', 'update')->name('customers.update');
+        Route::delete('/customer/{id}/destroy', 'destroy')->name('customers.destroy');
     });
 
     Route::controller(ProductController::class)->group(function () {

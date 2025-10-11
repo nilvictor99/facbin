@@ -10,6 +10,8 @@
     import ClasicButton from '@/Components/Buttons/ClasicButton.vue';
     import UserPlus from '@/Components/Icons/UserPlus.vue';
     import EditButton from '@/Components/Buttons/EditButton.vue';
+    import ButtonDelete from '@/Components/Buttons/ButtonDelete.vue';
+    import ModalDelete from '@/Components/Modals/ModalDelete.vue';
 
     const props = defineProps({
         data: {
@@ -42,6 +44,9 @@
     const perPage = ref(props.perPage);
     const customerId = ref(props.customerId);
     const dateRange = ref(props.dateRange);
+    const showDeleteModal = ref(false);
+    const customerToDelete = ref(null);
+    const isDeleting = ref(false);
 
     function handleSearch(val) {
         if (typeof val === 'object' && val !== null) {
@@ -68,6 +73,26 @@
             }
         );
     }
+
+    const handleDelete = customer => {
+        customerToDelete.value = customer.id;
+        showDeleteModal.value = true;
+    };
+
+    const confirmDelete = () => {
+        if (!customerToDelete.value) return;
+
+        isDeleting.value = true;
+        router.delete(route('customers.destroy', customerToDelete.value), {
+            preserveScroll: true,
+            onFinish: () => {
+                isDeleting.value = false;
+                showDeleteModal.value = false;
+                customerToDelete.value = null;
+            },
+            onError: console.error,
+        });
+    };
 </script>
 
 <template>
@@ -92,7 +117,9 @@
                         :options="
                             customers.map(customer => ({
                                 id: customer.id,
-                                text: customer.profile.full_name,
+                                text: customer.profile
+                                    ? customer.profile.full_name
+                                    : 'N/A',
                             }))
                         "
                         :initialValue="{
@@ -171,23 +198,34 @@
                                     class="hover:bg-gray-50 transition-colors"
                                 >
                                     <td class="px-6 py-4 text-sm text-gray-900">
-                                        {{ customer.profile.full_name }}
+                                        {{
+                                            customer.profile
+                                                ? customer.profile.full_name
+                                                : 'N/A'
+                                        }}
                                     </td>
                                     <td
                                         class="px-6 py-4 text-center text-sm text-gray-900"
                                     >
-                                        {{ customer.profile.document_number }}
+                                        {{
+                                            customer.profile
+                                                ? customer.profile
+                                                      .document_number
+                                                : 'N/A'
+                                        }}
                                     </td>
                                     <td class="px-6 py-4 text-center text-sm">
                                         <span
                                             :class="[
                                                 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
+                                                customer.profile &&
                                                 customer.profile.active
                                                     ? 'bg-green-100 text-green-800'
                                                     : 'bg-red-100 text-red-800',
                                             ]"
                                         >
                                             {{
+                                                customer.profile &&
                                                 customer.profile.active
                                                     ? 'Active'
                                                     : 'Inactive'
@@ -195,7 +233,7 @@
                                         </span>
                                     </td>
                                     <td
-                                        class="px-6 py-4 text-center text-sm text-gray-900"
+                                        class="flex px-6 py-4 text-center text-sm text-gray-900"
                                     >
                                         <EditButton
                                             @click="
@@ -207,6 +245,14 @@
                                                         )
                                                     )
                                             "
+                                        />
+                                        <ButtonDelete
+                                            :roles="['super usuario']"
+                                            :permissions="[
+                                                'delete_password::vault',
+                                            ]"
+                                            @click="handleDelete(customer)"
+                                            :disabled="isDeleting"
                                         />
                                     </td>
                                 </tr>
@@ -228,5 +274,16 @@
                 </div>
             </div>
         </section>
+
+        <ModalDelete
+            :show="showDeleteModal"
+            title="Eliminar Cliente"
+            description="¿Está seguro que desea eliminar este cliente? Esta acción no se puede deshacer."
+            itemType="Cliente"
+            :itemId="customerToDelete"
+            @close="showDeleteModal = false"
+            @confirm="confirmDelete"
+            :loading="isDeleting"
+        />
     </AppLayout>
 </template>

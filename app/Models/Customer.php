@@ -38,6 +38,11 @@ class Customer extends Model
         return $this->morphMany(Contact::class, 'contactable');
     }
 
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
     public function scopeWithProfile(Builder $query)
     {
         return $query->with(['profile']);
