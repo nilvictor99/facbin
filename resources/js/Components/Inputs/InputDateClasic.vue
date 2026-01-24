@@ -3,7 +3,6 @@
     import CalendarClock from '@/Components/Icons/CalendarClock.vue';
     import ChevronLeft from '@/Components/Icons/ChevronLeft.vue';
     import ChevronRight from '@/Components/Icons/ChevronRight.vue';
-    import ClassicLabel from '../Labels/ClassicLabel.vue';
 
     const props = defineProps({
         modelValue: { type: String, default: '' },
@@ -421,7 +420,7 @@
 
 <template>
     <div class="w-full">
-        <ClassicLabel
+        <LabelSimple
             v-if="label"
             :value="label"
             :theme="labelTheme"
